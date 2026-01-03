@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЭлектроТест - Тесты по электромонтажу РБ</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Экран выбора теста -->
+        <div id="home-screen">
+            <header class="header">
+                <h1><i class="fas fa-bolt"></i> ЭлектроТест</h1>
+                <p class="subtitle">Проверка знаний строительных правил электромонтажа Республики Беларусь</p>
+            </header>
+            
+            <div class="user-info">
+                <div class="user-input">
+                    <label for="user-name"><i class="fas fa-user"></i> Ваше имя:</label>
+                    <input type="text" id="user-name" placeholder="Введите ваше имя" value="Электрик">
+                </div>
+                <button class="btn" id="save-name-btn"><i class="fas fa-save"></i> Сохранить</button>
+            </div>
+            
+            <main class="main-content">
+                <h2><i class="fas fa-list"></i> Выберите тест для прохождения:</h2>
+                <div class="tests-grid" id="tests-container">
+                    <!-- Тесты будут загружены через JavaScript -->
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>Вопросов в базе</h3>
+                        <p id="total-questions">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>Доступных тестов</h3>
+                        <p id="total-tests">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-award"></i>
+                        <h3>Лучший результат</h3>
+                        <p id="best-score">0%</p>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> Инструкция:</h3>
+                    <ol>
+                        <li>Выберите тест из списка</li>
+                        <li>Ответьте на все вопросы</li>
+                        <li>Посмотрите результат и объяснения</li>
+                        <li>При необходимости пройдите тест снова</li>
+                    </ol>
+                </div>
+            </main>
+            
+            <footer class="footer">
+                <p>© 2024 ЭлектроТест. Для обучения и самопроверки.</p>
+                <p class="version">Версия 1.0</p>
+            </footer>
+        </div>
+
+        <!-- Экран тестирования -->
+        <div id="test-screen" class="hidden">
+            <div class="test-header">
+                <button class="btn btn-secondary" id="back-btn">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
+                
+                <div class="test-info">
+                    <h3 id="current-test-name">Название теста</h3>
+                    <div class="progress-container">
+                        <span id="progress-text">Вопрос 1 из 10</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timer" id="timer">
+                    <i class="fas fa-clock"></i> <span>00:00</span>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">Вопрос #<span id="question-number">1</span></span>
+                    <span class="question-points"><i class="fas fa-star"></i> 1 балл</span>
+                </div>
+                
+                <h3 id="question-text">Текст вопроса появится здесь</h3>
+                
+                <div id="answers-container">
+                    <!-- Варианты ответов будут загружены через JavaScript -->
+                </div>
+                
+                <div id="explanation" class="hidden">
+                    <h4><i class="fas fa-lightbulb"></i> Объяснение:</h4>
+                    <p id="explanation-text"></p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="hint">
+                    <i class="fas fa-mouse-pointer"></i> Выберите один вариант ответа
+                </div>
+                <button class="btn" id="next-btn" disabled>
+                    Следующий вопрос <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Правильно</h3>
+                    <p id="correct-count">0</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-times-circle"></i>
+                    <h3>Неправильно</h3>
+                    <p id="wrong-count">0</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h3>Осталось</h3>
+                    <p id="remaining-count">0</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-percentage"></i>
+                    <h3>Точность</h3>
+                    <p id="accuracy">0%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран результатов -->
+        <div id="results-screen" class="hidden">
+            <div class="results-header">
+                <h1><i class="fas fa-trophy"></i> Тест завершен!</h1>
+                <p class="user-greeting" id="user-greeting">Поздравляем, Электрик!</p>
+            </div>
+            
+            <div class="score-card">
+                <div class="score-circle">
+                    <div class="score-percent" id="score-percent">0%</div>
+                    <div class="score-label">Ваш результат</div>
+                </div>
+                
+                <div class="score-message">
+                    <h3 id="result-message">Оцениваю результат...</h3>
+                    <div class="result-details">
+                        <p><i class="fas fa-check" style="color: #2ecc71;"></i> Правильных: <strong id="final-correct">0</strong></p>
+                        <p><i class="fas fa-times" style="color: #e74c3c;"></i> Неправильных: <strong id="final-wrong">0</strong></p>
+                        <p><i class="fas fa-list-alt" style="color: #3498db;"></i> Всего вопросов: <strong id="final-total">0</strong></p>
+                        <p><i class="fas fa-clock" style="color: #9b59b6;"></i> Время: <strong id="final-time">00:00</strong></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="answers-review">
+                <h3><i class="fas fa-chart-bar"></i> Обзор ответов:</h3>
+                <div id="answers-review-container">
+                    <!-- Обзор ответов будет здесь -->
+                </div>
+            </div>
+            
+            <div class="results-actions">
+                <button class="btn btn-secondary" id="restart-btn">
+                    <i class="fas fa-redo"></i> Пройти заново
+                </button>
+                <button class="btn" id="new-test-btn">
+                    <i class="fas fa-book"></i> Выбрать другой тест
+                </button>
+                <button class="btn btn-success" id="certificate-btn">
+                    <i class="fas fa-certificate"></i> Сертификат
+                </button>
+            </div>
+            
+            <div class="motivation">
+                <p><i class="fas fa-quote-left"></i> Знания по электробезопасности — это не просто требования, это спасённые жизни. <i class="fas fa-quote-right"></i></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключаем файлы JavaScript -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
