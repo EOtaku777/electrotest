@@ -139,11 +139,32 @@ function setupEventListeners() {
     document.getElementById('new-test-btn').addEventListener('click', goHome);
     document.getElementById('certificate-btn').addEventListener('click', showCertificate);
 }
-
-// Начать тест
+// Старт теста
 function startTest(testId) {
+    console.log("=== НАЧАЛО ТЕСТА ===");
+    
     currentTest = tests.find(t => t.id === testId);
-    currentQuestions = shuffleArray(questions.filter(q => q.testId === testId));
+    console.log("Выбран тест:", currentTest.name);
+    
+    // Получаем ВСЕ вопросы для этого теста
+    const allQuestions = questions.filter(q => q.testId === testId);
+    console.log(`Всего вопросов в тесте: ${allQuestions.length}`);
+    console.log("ID всех вопросов:", allQuestions.map(q => q.id));
+    
+    // Перемешиваем вопросы
+    const shuffledQuestions = shuffleArray(allQuestions);
+    console.log("Перемешанные вопросы:", shuffledQuestions.map(q => q.id));
+    
+    // Берем только первые 10 вопросов (или меньше)
+    const questionsToShow = 10;
+    const questionsCount = Math.min(questionsToShow, allQuestions.length);
+    console.log(`Будет показано вопросов: ${questionsCount}`);
+    
+    // Записываем только выбранные вопросы
+    currentQuestions = shuffledQuestions.slice(0, questionsCount);
+    console.log("Выбранные вопросы:", currentQuestions.map(q => q.id));
+    
+    console.log("=== КОНЕЦ ИНИЦИАЛИЗАЦИИ ===");
     currentQuestionIndex = 0;
     userAnswers = [];
     score = { correct: 0, totalPoints: 0, maxPoints: 0 };
