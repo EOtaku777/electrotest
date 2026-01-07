@@ -1546,107 +1546,264 @@ const questions = [
         points: 1
     },
 
-    // Тест 4: Охрана труда (5 вопросов)
+    // Тест 4: Охрана труда (10 вопросов)
     {
-        id: 16,
-        testId: 4,
-        text: "Какое напряжение считается безопасным в сырых помещениях?",
-        answers: [
-            { id: 1, text: "12 В", isCorrect: true },
-            { id: 2, text: "36 В", isCorrect: false },
-            { id: 3, text: "110 В", isCorrect: false },
-            { id: 4, text: "220 В", isCorrect: false }
-        ],
-        explanation: "В сырых и особо опасных помещениях безопасным считается напряжение не выше 12 В переменного тока.",
-        points: 1
-    },
-    {
-        id: 17,
-        testId: 4,
-        text: "Какой минимальный срок действия урядочения по электробезопасности?",
-        answers: [
-            { id: 1, text: "6 месяцев", isCorrect: false },
-            { id: 2, text: "1 год", isCorrect: true },
-            { id: 3, text: "3 года", isCorrect: false },
-            { id: 4, text: "5 лет", isCorrect: false }
-        ],
-        explanation: "Удостоверение по электробезопасности действует 1 год, после чего необходима повторная проверка знаний.",
-        points: 1
-    },
-    {
-        id: 18,
-        testId: 4,
-        text: "Какие средства защиты должны применяться при работе в электроустановках?",
-        answers: [
-            { id: 1, text: "Только диэлектрические перчатки", isCorrect: false },
-            { id: 2, text: "Только указатель напряжения", isCorrect: false },
-            { id: 3, text: "Комплекс средств защиты по наряду", isCorrect: true },
-            { id: 4, text: "Защитные очки", isCorrect: false }
-        ],
-        explanation: "При работе в электроустановках применяется комплекс средств защиты, указанный в наряде-допуске.",
-        points: 1
-    },
-    {
-        id: 19,
-        testId: 4,
-        text: "Как часто проводятся тренировочные занятия по оказанию первой помощи?",
-        answers: [
-            { id: 1, text: "1 раз в месяц", isCorrect: false },
-            { id: 2, text: "1 раз в квартал", isCorrect: false },
-            { id: 3, text: "1 раз в полгода", isCorrect: true },
-            { id: 4, text: "1 раз в год", isCorrect: false }
-        ],
-        explanation: "Тренировочные занятия по оказанию первой помощи при поражении электрическим током проводятся не реже 1 раза в полгода.",
-        points: 2
-    },
-    {
-        id: 20,
-        testId: 4,
-        text: "Что необходимо сделать в первую очередь при поражении человека электрическим током?",
-        answers: [
-            { id: 1, text: "Вызвать врача", isCorrect: false },
-            { id: 2, text: "Начать реанимацию", isCorrect: false },
-            { id: 3, text: "Освободить от действия тока", isCorrect: true },
-            { id: 4, text: "Дать воды", isCorrect: false }
-        ],
-        explanation: "Первое действие - немедленное освобождение пострадавшего от действия электрического тока с использованием средств защиты.",
-        points: 1
-    }
-];
-
-// Локальное хранилище для результатов
-const storage = {
-    saveResult(testId, score, time) {
-        const results = this.getResults();
-        results.push({
-            testId,
-            score,
-            time,
-            date: new Date().toISOString()
-        });
-        localStorage.setItem('electrotest_results', JSON.stringify(results));
-    },
-    
-    getResults() {
-        return JSON.parse(localStorage.getItem('electrotest_results') || '[]');
-    },
-    
-    getBestScore(testId) {
-        const results = this.getResults()
-            .filter(r => r.testId === testId)
-            .sort((a, b) => b.score - a.score);
-        return results.length > 0 ? results[0].score : 0;
-    },
-    
-    getUserName() {
-        return localStorage.getItem('electrotest_username') || 'Электрик';
-    },
-    
-    saveUserName(name) {
-        localStorage.setItem('electrotest_username', name);
-    },
-    
-    clearResults() {
-        localStorage.removeItem('electrotest_results');
-    }
-};
+    id: 104,
+    testId: 4, // ID теста "Охрана труда"
+    text: "Какое напряжение считается безопасным в помещениях с повышенной опасностью в РБ?",
+    answers: [
+        { id: 1, text: "12 В переменного тока", isCorrect: false },
+        { id: 2, text: "36 В переменного тока", isCorrect: false },
+        { id: 3, text: "42 В переменного тока", isCorrect: false },
+        { id: 4, text: "12 В переменного и 30 В постоянного тока", isCorrect: true }
+    ],
+    explanation: "Согласно ТКП 427-2012, в помещениях с повышенной опасностью безопасным считается напряжение не выше 12 В переменного и 30 В постоянного тока.",
+    points: 2
+},
+{
+    id: 105,
+    testId: 4,
+    text: "Какой минимальный срок действия удостоверения по электробезопасности в РБ?",
+    answers: [
+        { id: 1, text: "6 месяцев", isCorrect: false },
+        { id: 2, text: "1 год", isCorrect: true },
+        { id: 3, text: "2 года", isCorrect: false },
+        { id: 4, text: "3 года", isCorrect: false }
+    ],
+    explanation: "Удостоверение по электробезопасности действует 1 год, после чего требуется очередная проверка знаний.",
+    points: 1
+},
+{
+    id: 106,
+    testId: 4,
+    text: "Какое расстояние должно быть между двумя параллельно прокладываемыми кабелями?",
+    answers: [
+        { id: 1, text: "50 мм", isCorrect: false },
+        { id: 2, text: "100 мм", isCorrect: true },
+        { id: 3, text: "150 мм", isCorrect: false },
+        { id: 4, text: "200 мм", isCorrect: false }
+    ],
+    explanation: "Минимальное расстояние между параллельно прокладываемыми кабелями должно быть не менее 100 мм для обеспечения охлаждения и предотвращения повреждений.",
+    points: 2
+},
+{
+    id: 107,
+    testId: 4,
+    text: "Какая группа по электробезопасности требуется для выполнения работ в электроустановках до 1000 В?",
+    answers: [
+        { id: 1, text: "I группа", isCorrect: false },
+        { id: 2, text: "II группа", isCorrect: false },
+        { id: 3, text: "III группа", isCorrect: true },
+        { id: 4, text: "IV группа", isCorrect: false }
+    ],
+    explanation: "Для самостоятельной работы в электроустановках до 1000 В требуется не ниже III группы по электробезопасности.",
+    points: 1
+},
+{
+    id: 108,
+    testId: 4,
+    text: "Как часто должны проверяться средства защиты, используемые в электроустановках?",
+    answers: [
+        { id: 1, text: "Ежемесячно", isCorrect: false },
+        { id: 2, text: "Ежеквартально", isCorrect: false },
+        { id: 3, text: "1 раз в 6 месяцев", isCorrect: true },
+        { id: 4, text: "1 раз в год", isCorrect: false }
+    ],
+    explanation: "Средства защиты в электроустановках должны подвергаться периодическим испытаниям и проверкам не реже 1 раза в 6 месяцев.",
+    points: 2
+},
+{
+    id: 109,
+    testId: 4,
+    text: "Какое минимальное сечение медного заземляющего проводника должно применяться?",
+    answers: [
+        { id: 1, text: "2,5 мм²", isCorrect: false },
+        { id: 2, text: "4 мм²", isCorrect: false },
+        { id: 3, text: "6 мм²", isCorrect: true },
+        { id: 4, text: "10 мм²", isCorrect: false }
+    ],
+    explanation: "Минимальное сечение медного заземляющего проводника должно быть не менее 6 мм² согласно ТКП 181-2009.",
+    points: 1
+},
+{
+    id: 110,
+    testId: 4,
+    text: "При каком минимальном расстоянии до токоведущих частей работы считаются выполняемыми под напряжением?",
+    answers: [
+        { id: 1, text: "0,3 м", isCorrect: false },
+        { id: 2, text: "0,6 м", isCorrect: true },
+        { id: 3, text: "1,0 м", isCorrect: false },
+        { id: 4, text: "1,5 м", isCorrect: false }
+    ],
+    explanation: "Работы считаются выполняемыми под напряжением, если расстояние от работающего до токоведущих частей менее 0,6 м для напряжений до 1000 В.",
+    points: 2
+},
+{
+    id: 111,
+    testId: 4,
+    text: "Какой документ оформляется для производства работ в электроустановках?",
+    answers: [
+        { id: 1, text: "Акт-допуск", isCorrect: false },
+        { id: 2, text: "Наряд-допуск", isCorrect: true },
+        { id: 3, text: "Разрешение на работу", isCorrect: false },
+        { id: 4, text: "Приказ", isCorrect: false }
+    ],
+    explanation: "Для производства работ в электроустановках оформляется наряд-допуск, который определяет условия и меры безопасности.",
+    points: 1
+},
+{
+    id: 112,
+    testId: 4,
+    text: "Какое испытательное напряжение применяется для проверки диэлектрических перчаток?",
+    answers: [
+        { id: 1, text: "1000 В", isCorrect: false },
+        { id: 2, text: "2500 В", isCorrect: false },
+        { id: 3, text: "6000 В", isCorrect: true },
+        { id: 4, text: "10000 В", isCorrect: false }
+    ],
+    explanation: "Диэлектрические перчатки испытываются напряжением 6000 В в течение 1 минуты при норме тока утечки не более 6 мА.",
+    points: 2
+},
+{
+    id: 113,
+    testId: 4,
+    text: "Как часто должны проводиться тренировки по оказанию первой помощи?",
+    answers: [
+        { id: 1, text: "1 раз в месяц", isCorrect: false },
+        { id: 2, text: "1 раз в квартал", isCorrect: false },
+        { id: 3, text: "1 раз в 6 месяцев", isCorrect: true },
+        { id: 4, text: "1 раз в год", isCorrect: false }
+    ],
+    explanation: "Тренировки по оказанию первой помощи при поражении электрическим током должны проводиться не реже 1 раза в 6 месяцев.",
+    points: 1
+},
+{
+    id: 114,
+    testId: 4,
+    text: "Какое должно быть сопротивление изоляции электропроводки в помещениях без повышенной опасности?",
+    answers: [
+        { id: 1, text: "Не менее 0,25 МОм", isCorrect: false },
+        { id: 2, text: "Не менее 0,5 МОм", isCorrect: true },
+        { id: 3, text: "Не менее 1,0 МОм", isCorrect: false },
+        { id: 4, text: "Не менее 10 МОм", isCorrect: false }
+    ],
+    explanation: "Сопротивление изоляции электропроводки в помещениях без повышенной опасности должно быть не менее 0,5 МОм.",
+    points: 1
+},
+{
+    id: 115,
+    testId: 4,
+    text: "Кто имеет право выполнять измерения в электроустановках?",
+    answers: [
+        { id: 1, text: "Любой электрик", isCorrect: false },
+        { id: 2, text: "Специалист с III группой", isCorrect: false },
+        { id: 3, text: "Специалист с IV группой", isCorrect: true },
+        { id: 4, text: "Только инженер", isCorrect: false }
+    ],
+    explanation: "Измерения в электроустановках имеют право выполнять специалисты с группой по электробезопасности не ниже IV.",
+    points: 2
+},
+{
+    id: 116,
+    testId: 4,
+    text: "Какое минимальное расстояние от места раскопки до кабеля должно быть при земляных работах?",
+    answers: [
+        { id: 1, text: "0,3 м", isCorrect: false },
+        { id: 2, text: "0,5 м", isCorrect: true },
+        { id: 3, text: "1,0 м", isCorrect: false },
+        { id: 4, text: "1,5 м", isCorrect: false }
+    ],
+    explanation: "При производстве земляных работ вблизи кабелей раскопка должна производиться на расстоянии не менее 0,5 м от кабеля.",
+    points: 1
+},
+{
+    id: 117,
+    testId: 4,
+    text: "Какой срок хранения установлен для журналов инструктажей по охране труда?",
+    answers: [
+        { id: 1, text: "1 год", isCorrect: false },
+        { id: 2, text: "3 года", isCorrect: false },
+        { id: 3, text: "5 лет", isCorrect: false },
+        { id: 4, text: "10 лет", isCorrect: true }
+    ],
+    explanation: "Журналы регистрации инструктажей по охране труда должны храниться в организации не менее 10 лет.",
+    points: 2
+},
+{
+    id: 118,
+    testId: 4,
+    text: "Какая высота установки розеток рекомендуется в производственных помещениях?",
+    answers: [
+        { id: 1, text: "0,8-1,0 м", isCorrect: false },
+        { id: 2, text: "1,0-1,5 м", isCorrect: false },
+        { id: 3, text: "1,5-1,8 м", isCorrect: true },
+        { id: 4, text: "На любой удобной высоте", isCorrect: false }
+    ],
+    explanation: "В производственных помещениях розетки рекомендуется устанавливать на высоте 1,5-1,8 м от пола для безопасности и удобства.",
+    points: 1
+},
+{
+    id: 119,
+    testId: 4,
+    text: "Какой должен быть угол наклона приставной лестницы при выполнении электромонтажных работ?",
+    answers: [
+        { id: 1, text: "45-55 градусов", isCorrect: false },
+        { id: 2, text: "60-70 градусов", isCorrect: false },
+        { id: 3, text: "75-80 градусов", isCorrect: true },
+        { id: 4, text: "80-85 градусов", isCorrect: false }
+    ],
+    explanation: "Приставная лестница должна устанавливаться под углом 75-80 градусов к горизонтальной поверхности для обеспечения устойчивости.",
+    points: 2
+},
+{
+    id: 120,
+    testId: 4,
+    text: "Какое освещение должно быть в электрощитовых помещениях?",
+    answers: [
+        { id: 1, text: "Естественное", isCorrect: false },
+        { id: 2, text: "Искусственное", isCorrect: false },
+        { id: 3, text: "Аварийное", isCorrect: false },
+        { id: 4, text: "Рабочее и аварийное", isCorrect: true }
+    ],
+    explanation: "В электрощитовых должно быть рабочее и аварийное освещение для обеспечения безопасности при отключении основного.",
+    points: 1
+},
+{
+    id: 121,
+    testId: 4,
+    text: "Какой класс защиты должен быть у электроинструмента для работы в помещениях с повышенной опасностью?",
+    answers: [
+        { id: 1, text: "0 класс", isCorrect: false },
+        { id: 2, text: "I класс", isCorrect: false },
+        { id: 3, text: "II класс", isCorrect: true },
+        { id: 4, text: "III класс", isCorrect: false }
+    ],
+    explanation: "В помещениях с повышенной опасностью должен применяться электроинструмент класса II (двойная изоляция) или III (пониженное напряжение).",
+    points: 2
+},
+{
+    id: 122,
+    testId: 4,
+    text: "Какое максимальное время отключения питания при однофазном замыкании на землю?",
+    answers: [
+        { id: 1, text: "0,2 секунды", isCorrect: false },
+        { id: 2, text: "0,4 секунды", isCorrect: true },
+        { id: 3, text: "1,0 секунда", isCorrect: false },
+        { id: 4, text: "5,0 секунд", isCorrect: false }
+    ],
+    explanation: "При однофазном замыкании на землю в сетях с глухозаземлённой нейтралью время отключения не должно превышать 0,4 секунды.",
+    points: 2
+},
+{
+    id: 123,
+    testId: 4,
+    text: "Какой цвет должен иметь защитный проводник (PE) согласно ПУЭ?",
+    answers: [
+        { id: 1, text: "Синий", isCorrect: false },
+        { id: 2, text: "Коричневый", isCorrect: false },
+        { id: 3, text: "Жёлто-зелёный", isCorrect: true },
+        { id: 4, text: "Чёрный", isCorrect: false }
+    ],
+    explanation: "Защитный проводник (PE) должен иметь жёлто-зелёную расцветку по всей длине для однозначной идентификации.",
+    points: 1
+}
