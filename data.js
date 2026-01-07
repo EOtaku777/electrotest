@@ -1393,28 +1393,10 @@ const questions = [
         explanation: "7.7.2.5 Трубчатые шины применяют с устройствами для гашения вибрации и компенсации температурных изменений их длины. На участках подсоединения шин к аппаратам шины располагают горизонтально. ",
         points: 2
     },
-    {
-        id: 103,
-        testId: 1,
-        text: "",
-        answers: [
-            { id: 1, text: "", isCorrect: false },
-            { id: 2, text: "", isCorrect: true },
-            { id: 3, text: "", isCorrect: false },
-            { id: 4, text: "", isCorrect: false }
-        ],
-        explanation: "",
-        points: 2
-    },
-
-
-
-
-
-
+    
     // Тест 2: ПУЭ Глава 1.8 (5 вопросов)
     {
-        id: 6,
+        id: 1006,
         testId: 2,
         text: "Какое сопротивление изоляции должно быть у силовых кабелей напряжением до 1000 В при приемо-сдаточных испытаниях?",
         answers: [
@@ -1427,7 +1409,7 @@ const questions = [
         points: 1
     },
     {
-        id: 7,
+        id: 1007,
         testId: 2,
         text: "Какое испытательное напряжение применяется для кабелей на напряжение до 1 кВ?",
         answers: [
@@ -1440,7 +1422,7 @@ const questions = [
         points: 1
     },
     {
-        id: 8,
+        id: 1008,
         testId: 2,
         text: "Какой должен быть угол заземления для вертикальных заземлителей?",
         answers: [
@@ -1453,7 +1435,7 @@ const questions = [
         points: 1
     },
     {
-        id: 9,
+        id: 10099,
         testId: 2,
         text: "Какое время должен выдерживать автоматический выключатель при испытании на срабатывание?",
         answers: [
@@ -1466,7 +1448,7 @@ const questions = [
         points: 2
     },
     {
-        id: 10,
+        id: 1330,
         testId: 2,
         text: "Какой прибор используется для измерения сопротивления заземления?",
         answers: [
@@ -1481,7 +1463,7 @@ const questions = [
 
     // Тест 3: ТКП 181-2009 (5 вопросов)
     {
-        id: 11,
+        id: 1231,
         testId: 3,
         text: "Как часто должны проводиться осмотры электроустановок без их отключения?",
         answers: [
@@ -1494,7 +1476,7 @@ const questions = [
         points: 1
     },
     {
-        id: 12,
+        id: 1992,
         testId: 3,
         text: "Кто имеет право проводить эксплуатацию электроустановок напряжением до 1000 В?",
         answers: [
@@ -1507,7 +1489,7 @@ const questions = [
         points: 1
     },
     {
-        id: 13,
+        id: 1893,
         testId: 3,
         text: "Какой документ должен быть на каждую электроустановку?",
         answers: [
@@ -1520,7 +1502,7 @@ const questions = [
         points: 1
     },
     {
-        id: 14,
+        id: 1400,
         testId: 3,
         text: "В течение какого времени должны храниться журналы осмотров электроустановок?",
         answers: [
@@ -1533,7 +1515,7 @@ const questions = [
         points: 2
     },
     {
-        id: 15,
+        id: 1500,
         testId: 3,
         text: "Что должно быть указано на каждом автоматическом выключателе?",
         answers: [
@@ -1807,3 +1789,39 @@ const questions = [
     explanation: "Защитный проводник (PE) должен иметь жёлто-зелёную расцветку по всей длине для однозначной идентификации.",
     points: 1
 }
+];
+const storage = {
+    saveResult(testId, score, time) {
+        const results = this.getResults();
+        results.push({
+            testId,
+            score,
+            time,
+            date: new Date().toISOString()
+        });
+        localStorage.setItem('electrotest_results', JSON.stringify(results));
+    },
+    
+    getResults() {
+        return JSON.parse(localStorage.getItem('electrotest_results') || '[]');
+    },
+    
+    getBestScore(testId) {
+        const results = this.getResults()
+            .filter(r => r.testId === testId)
+            .sort((a, b) => b.score - a.score);
+        return results.length > 0 ? results[0].score : 0;
+    },
+    
+    getUserName() {
+        return localStorage.getItem('electrotest_username') || 'Электрик';
+    },
+    
+    saveUserName(name) {
+        localStorage.setItem('electrotest_username', name);
+    },
+    
+    clearResults() {
+        localStorage.removeItem('electrotest_results');
+    }
+};
