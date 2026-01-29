@@ -772,3 +772,97 @@ body {
         padding: 15px;
     }
 }
+/* Стили для PWA с вкладками */
+
+/* Заголовок окна (если приложение в оконном режиме) */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(titlebar-area-height, 0px);
+  }
+  
+  .titlebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(titlebar-area-height, 40px);
+    background: #764ba2;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    -webkit-app-region: drag;
+    z-index: 1000;
+  }
+  
+  .titlebar button {
+    -webkit-app-region: no-drag;
+  }
+}
+
+/* Адаптация для вкладок */
+.tab-container {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  background: #f8f9fa;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  background: white;
+  margin-right: 5px;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+.fa-bolt::before {
+    content: "\f0e7"; /* Это символ молнии */
+    /* Добавь анимации */
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.test-card {
+    animation: slideIn 0.3s ease;
+}
+}
+/* Эмодзи вместо FontAwesome */
+.fa-bolt::before { content: "⚡" !important; font-family: sans-serif !important; }
+.fa-chart-line::before { content: "📊" !important; font-family: sans-serif !important; }
+.fa-question::before { content: "❓" !important; font-family: sans-serif !important; }
+.fa-clock::before { content: "⏱️" !important; font-family: sans-serif !important; }
+.fa-trophy::before { content: "🏆" !important; font-family: sans-serif !important; }
+.fa-user::before { content: "👤" !important; font-family: sans-serif !important; }
+.fa-save::before { content: "💾" !important; font-family: sans-serif !important; }
+.fa-list::before { content: "📋" !important; font-family: sans-serif !important; }
+.fa-question-circle::before { content: "❔" !important; font-family: sans-serif !important; }
+.fa-clipboard-list::before { content: "📝" !important; font-family: sans-serif !important; }
+.fa-award::before { content: "🏅" !important; font-family: sans-serif !important; }
+.fa-info-circle::before { content: "ℹ️" !important; font-family: sans-serif !important; }
+.fa-arrow-left::before { content: "⬅️" !important; font-family: sans-serif !important; }
+.fa-star::before { content: "⭐" !important; font-family: sans-serif !important; }
+.fa-lightbulb::before { content: "💡" !important; font-family: sans-serif !important; }
+.fa-mouse-pointer::before { content: "👆" !important; font-family: sans-serif !important; }
+.fa-arrow-right::before { content: "➡️" !important; font-family: sans-serif !important; }
+.fa-check-circle::before { content: "✅" !important; font-family: sans-serif !important; }
+.fa-times-circle::before { content: "❌" !important; font-family: sans-serif !important; }
+.fa-hourglass-half::before { content: "⏳" !important; font-family: sans-serif !important; }
+.fa-percentage::before { content: "📊" !important; font-family: sans-serif !important; }
+.fa-trophy::before { content: "🏆" !important; font-family: sans-serif !important; }
+.fa-check::before { content: "✓" !important; font-family: sans-serif !important; }
+.fa-times::before { content: "✗" !important; font-family: sans-serif !important; }
+.fa-list-alt::before { content: "📄" !important; font-family: sans-serif !important; }
+.fa-chart-bar::before { content: "📈" !important; font-family: sans-serif !important; }
+.fa-redo::before { content: "🔁" !important; font-family: sans-serif !important; }
+.fa-book::before { content: "📚" !important; font-family: sans-serif !important; }
+.fa-certificate::before { content: "📜" !important; font-family: sans-serif !important; }
+.fa-quote-left::before { content: "❝" !important; font-family: sans-serif !important; }
+.fa-quote-right::before { content: "❞" !important; font-family: sans-serif !important; }

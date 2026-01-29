@@ -618,3 +618,149 @@ window.ElectroTest = {
     restartTest,
     goHome
 };
+// Регистрация Service Worker для PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker зарегистрирован:', registration);
+      })
+      .catch(error => {
+        console.log('Ошибка регистрации ServiceWorker:', error);
+      });
+  });
+}
+
+// Определяем, установлено ли приложение
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.deferredPrompt = e;
+  
+  // Показываем кнопку "Установить"
+  showInstallButton();
+});
+
+function showInstallButton() {
+  const installBtn = document.createElement('button');
+  installBtn.id = 'install-btn';
+  installBtn.innerHTML = '📱 Установить приложение';
+  installBtn.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-weight: bold;
+  `;
+  
+  installBtn.addEventListener('click', async () => {
+    if (!window.deferredPrompt) return;
+    
+    window.deferredPrompt.prompt();
+    const { outcome } = await window.deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      console.log('Пользователь установил приложение');
+      installBtn.remove();
+    }
+    
+    window.deferredPrompt = null;
+  });
+  
+  document.body.appendChild(installBtn);
+}
+// В ваш script.js добавьте:
+
+// Проверяем, поддерживаются ли вкладки
+if ('launchQueue' in window && 'targets' in LaunchParams.prototype) {
+  console.log('Вкладки PWA поддерживаются');
+  
+  // Обработка запуска приложения
+  window.launchQueue.setConsumer(async (launchParams) => {
+    if (launchParams.targets && launchParams.targets.length > 0) {
+      // Приложение открыто из другой вкладки или ссылки
+      handleNewTab(launchParams.targets[0]);
+    }
+  });
+}
+
+function handleNewTab(target) {
+  // Можно открыть новый тест или контент
+  console.log('Новая вкладка:', target);
+  
+  // Например, если ссылка ведет на конкретный тест
+  if (target.url.includes('test=')) {
+    const testId = new URL(target.url).searchParams.get('test');
+    startTest(parseInt(testId));
+  }
+}
+
+// Создание новой вкладки
+function createNewTab(url) {
+  if (window.open) {
+    window.open(url, '_blank');
+  }
+}
+
+// Кнопка "Новый тест" в приложении
+document.addEventListener('DOMContentLoaded', function() {
+  const newTestBtn = document.createElement('button');
+  newTestBtn.textContent = '➕ Новый тест';
+  newTestBtn.className = 'btn';
+  newTestBtn.onclick = () => createNewTab('/index.html');
+  
+  // Добавьте кнопку в интерфейс
+  document.querySelector('.controls')?.appendChild(newTestBtn);
+});
+// Обработка ссылок из других приложений
+if ('windowControlsOverlay' in navigator) {
+  navigator.windowControlsOverlay.addEventListener('geometrychange', (event) => {
+    // Окно изменило размер/положение
+    console.log('Window geometry changed:', event);
+  });
+}
+
+// Если пользователь кликнул на ссылку где-то еще
+if (document.referrer) {
+  console.log('Пришли из:', document.referrer);
+  
+  // Проверяем параметры URL
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('test')) {
+    // Автоматически запускаем тест
+    const testId = urlParams.get('test');
+    setTimeout(() => startTest(parseInt(testId)), 500);
+  }
+}
+// 1. Убедись, что иконка действительно видна на странице
+const icon = document.querySelector('i.fa-bolt');
+icon.style.border = '3px solid red'; // Добавим красную рамку
+
+// 2. Проверим координаты иконки
+const rect = icon.getBoundingClientRect();
+console.log('Позиция иконки:', {
+    top: rect.top,
+    left: rect.left,
+    width: rect.width,
+    height: rect.height,
+    visible: rect.width > 0 && rect.height > 0
+});
+
+// 3. Проверим, не перекрыта ли иконка другим элементом
+console.log('Элемент в точке иконки:', document.elementFromPoint(rect.left + 10, rect.top + 10));
+// регаем сервис воркер
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('/service-worker.js')
+.then((registration) => {
+console.log('Service Worker зарегистрирован:', registration);
+})
+.catch((error) => {
+console.error('Ошибка регистрации Service Worker:', error);
+});
+});
