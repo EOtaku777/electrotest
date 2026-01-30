@@ -3,6 +3,7 @@
   "dir": "ltr",
   "display": "standalone",
   "name": "ЭлектроТест",
+  "description": "Тестовое приложение по электробезопасности",
   "orientation": "any",
   "scope": "/",
   "short_name": "ЭлектроТест",
@@ -10,42 +11,16 @@
   "theme_color": "#764ba2",
   "icons": [
     {
-      "src": "https://eotaku777.github.io/electrotest/icons/icon-192x192.svg",
-      "type": "image/svg+xml",
-      "sizes": "192x192",
-      "isSquare": true,
-      "isPng": true,
-      "isWebp": false,
-      "isJpg": false,
-      "width": 192,
-      "is512x512": false,
-      "is256x256": false,
-      "is192x192": true
-    },
-    {
-      "src": "https://eotaku777.github.io/electrotest/icons/icon-512x512.svg",
-      "type": "image/svg+xml",
-      "sizes": "512x512",
-      "isSquare": true,
-      "isPng": true,
-      "isWebp": false,
-      "isJpg": false,
-      "width": 512,
-      "is512x512": true,
-      "is256x256": false,
-      "is192x192": false
-    },
-    {
       "src": "https://eotaku777.github.io/electrotest/icons/icon-192x192.png",
       "type": "image/png",
-      "isSquare": false,
-      "isPng": true,
-      "isWebp": false,
-      "isJpg": false,
-      "width": 0,
-      "is512x512": false,
-      "is256x256": false,
-      "is192x192": false
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://eotaku777.github.io/electrotest/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "categories": [
