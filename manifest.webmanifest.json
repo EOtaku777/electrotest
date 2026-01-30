@@ -1,0 +1,29 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "ЭлектроТест",
+  "description": "Тестовое приложение по электробезопасности",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "ЭлектроТест",
+  "start_url": "/",
+  "theme_color": "#764ba2",
+  "icons": [
+    {
+      "src": "https://eotaku777.github.io/electrotest/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://eotaku777.github.io/electrotest/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "education"
+  ]
+}
