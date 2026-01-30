@@ -3,8 +3,8 @@
   "short_name": "ЭлектроТест",
   "description": "Тестирование знаний строительных правил электромонтажа Беларуси",
   "id": "electrotest-app",
-  "start_url": "/electrotest/",
-  "scope": "/electrotest/",
+  "start_url": ".",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#764ba2",
@@ -13,7 +13,6 @@
   "dir": "ltr",
   "prefer_related_applications": false,
   "related_applications": [],
-  
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -22,21 +21,11 @@
       "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512x512.png", 
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  
-  "screenshots": [
-    {
-      "src": "screenshots/screen1-1280x720.png",
-      "sizes": "1280x720", 
-      "type": "image/png",
-      "label": "Главный экран приложения"
-    }
-  ],
-  
   "categories": ["education", "productivity"]
 }
