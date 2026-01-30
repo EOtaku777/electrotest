@@ -1,78 +1,53 @@
 {
-  "name": "ЭлектроТест - Правила электромонтажа РБ",
-  "short_name": "ЭлектроТест",
-  "description": "Тестирование знаний строительных правил электромонтажа Беларуси",
-  "start_url": "/",
+  "background_color": "#ffffff",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#667eea",
+  "name": "ЭлектроТест",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "ЭлектроТест",
+  "start_url": "/",
   "theme_color": "#764ba2",
-  "orientation": "portrait",
   "icons": [
     {
-      "src": "icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-192x192.png",
+      "src": "https://eotaku777.github.io/electrotest/icons/icon-192x192.svg",
+      "type": "image/png",
       "sizes": "192x192",
-      "type": "image/png"
+      "isSquare": true,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 192,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": true
     },
     {
-      "src": "icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512x512.png",
+      "src": "https://eotaku777.github.io/electrotest/icons/icon-512x512.svg",
+      "type": "image/png",
       "sizes": "512x512",
-      "type": "image/png"
+      "isSquare": true,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 512,
+      "is512x512": true,
+      "is256x256": false,
+      "is192x192": false
+    },
+    {
+      "src": "https://eotaku777.github.io/electrotest/icons/icon-192x192.png",
+      "isSquare": false,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
     }
   ],
-  "categories": ["education", "productivity", "utilities"],
-  "lang": "ru",
-  "dir": "ltr"
-}
-{
-  "name": "ЭлектроТест",
-  "start_url": "/",
-  "display": "standalone",
-  
-  // Добавьте для поддержки вкладок:
-  "display_override": ["tabbed"],
-  
-  // Настройки панели вкладок (если включили customizations)
-  "tab_strip": {
-    "new_tab_button": {
-      "url": "/new-test"  // Куда ведет кнопка "+"
-    }
-  },
-  
-  // Для захвата ссылок
-  "scope": "/",
-  "capture_links": "new-client",
-  
-  // Остальные настройки...
-  "icons": [...],
-  "theme_color": "#764ba2"
+  "categories": [
+    "education"
+  ]
 }
