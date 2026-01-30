@@ -11,7 +11,7 @@
   "icons": [
     {
       "src": "https://eotaku777.github.io/electrotest/icons/icon-192x192.svg",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "sizes": "192x192",
       "isSquare": true,
       "isPng": true,
@@ -24,7 +24,7 @@
     },
     {
       "src": "https://eotaku777.github.io/electrotest/icons/icon-512x512.svg",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "sizes": "512x512",
       "isSquare": true,
       "isPng": true,
@@ -37,6 +37,7 @@
     },
     {
       "src": "https://eotaku777.github.io/electrotest/icons/icon-192x192.png",
+      "type": "image/png",
       "isSquare": false,
       "isPng": true,
       "isWebp": false,
