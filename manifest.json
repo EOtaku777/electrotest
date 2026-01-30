@@ -27,21 +27,8 @@
     "education"
   ]
 }
-<<<<<<< HEAD
-"screenshots": [
-  {
-    "src": "/screenshots/main-1280x720.png",
-    "sizes": "1280x720",
-    "type": "image/png",
-    "label": "Главный экран приложения"
-  },
-  {
-    "src": "/screenshots/test-1280x720.png",
-    "sizes": "1280x720",
-    "type": "image/png",
-    "label": "Прохождение теста"
-  }
-]
+
 "id": "electroTest",
 =======
 >>>>>>> 26cba6de25b8f0fafc9dd54f4eb64a5262ad99e6
+
