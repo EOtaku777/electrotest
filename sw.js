@@ -23,4 +23,22 @@ self.addEventListener('fetch', (event) => {
         return response || fetch(event.request);
       })
   );
+
+});
+// sw.js - простой Service Worker
+self.addEventListener('install', (event) => {
+  console.log('Service Worker установлен');
+  // Принудительно активируем сразу
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('Service Worker активирован');
+  // Возьмём контроль над всеми клиентами
+  event.waitUntil(clients.claim());
+});
+
+self.addEventListener('fetch', (event) => {
+  // Просто пропускаем все запросы к сети
+  event.respondWith(fetch(event.request));
 });
