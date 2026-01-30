@@ -24,6 +24,20 @@
 
 <!-- Манифест PWA -->
 <link rel="manifest" href="manifest.json">
+    <script>
+// Регистрация Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/electrotest/sw.js')
+      .then(function(registration) {
+        console.log('ServiceWorker зарегистрирован:', registration.scope);
+      })
+      .catch(function(error) {
+        console.log('Ошибка регистрации ServiceWorker:', error);
+      });
+  });
+}
+</script>
 </head>
 <body>
     <div class="container" id="app">
@@ -216,4 +230,5 @@ if ('serviceWorker' in navigator) {
     <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
