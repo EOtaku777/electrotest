@@ -12,24 +12,17 @@ let userName = "Электрик";
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
     initApp();
+    setupFloatingButton();
 });
 
 function initApp() {
-    // Загрузить имя пользователя
     userName = storage.getUserName();
     document.getElementById('user-name').value = userName;
-    
-    // Отобразить тесты
     displayTests();
-    
-    // Настроить обработчики событий
     setupEventListeners();
-    
-    // Обновить статистику
     updateStats();
 }
 
-// Отображение списка тестов
 function displayTests() {
     const container = document.getElementById('tests-container');
     container.innerHTML = '';
@@ -37,9 +30,7 @@ function displayTests() {
     tests.forEach(test => {
         const questionCount = questions.filter(q => q.testId === test.id).length;
         const bestScore = storage.getBestScore(test.id);
-        const maxScore = questions
-            .filter(q => q.testId === test.id)
-            .reduce((sum, q) => sum + q.points, 0);
+        const maxScore = questions.filter(q => q.testId === test.id).reduce((sum, q) => sum + q.points, 0);
         
         const testCard = document.createElement('div');
         testCard.className = 'test-card';
@@ -57,63 +48,23 @@ function displayTests() {
                     <i class="fas fa-clock"></i> ${Math.floor(test.timeLimit / 60)} мин
                 </span>
             </div>
-            ${bestScore > 0 ? `
-                <div class="best-score">
-                    <i class="fas fa-trophy"></i> Лучший результат: ${Math.round((bestScore / maxScore) * 100)}%
-                </div>
-            ` : ''}
+            ${bestScore > 0 ? `<div class="best-score"><i class="fas fa-trophy"></i> Лучший результат: ${Math.round((bestScore / maxScore) * 100)}%</div>` : ''}
             <button class="btn start-test-btn" data-test-id="${test.id}" style="background: ${test.color};">
                 <i class="fas fa-play-circle"></i> Начать тест
             </button>
         `;
-        
-        // Стили для мета-информации
-        const style = document.createElement('style');
-        style.textContent = `
-            .test-meta {
-                display: flex;
-                gap: 10px;
-                margin: 15px 0;
-                flex-wrap: wrap;
-            }
-            .test-meta span {
-                padding: 5px 10px;
-                border-radius: 15px;
-                font-size: 0.85rem;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .best-score {
-                background: #fff3cd;
-                color: #856404;
-                padding: 8px 12px;
-                border-radius: 8px;
-                margin: 10px 0;
-                font-size: 0.9rem;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-        `;
-        document.head.appendChild(style);
-        
         container.appendChild(testCard);
     });
     
-    // Обновить статистику на главной
     document.getElementById('total-questions').textContent = questions.length;
     document.getElementById('total-tests').textContent = tests.length;
     
-    // Лучший результат среди всех тестов
     const allScores = tests.map(t => storage.getBestScore(t.id));
     const bestOverall = Math.max(...allScores);
     document.getElementById('best-score').textContent = bestOverall > 0 ? `${bestOverall}%` : 'Нет данных';
 }
 
-// Настройка обработчиков событий
 function setupEventListeners() {
-    // Сохранение имени
     document.getElementById('save-name-btn').addEventListener('click', function() {
         const nameInput = document.getElementById('user-name');
         if (nameInput.value.trim()) {
@@ -123,7 +74,6 @@ function setupEventListeners() {
         }
     });
     
-    // Начало теста
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('start-test-btn') || e.target.closest('.start-test-btn')) {
             const btn = e.target.classList.contains('start-test-btn') ? e.target : e.target.closest('.start-test-btn');
@@ -132,104 +82,66 @@ function setupEventListeners() {
         }
     });
     
-    // Навигация
     document.getElementById('back-btn').addEventListener('click', goHome);
     document.getElementById('next-btn').addEventListener('click', nextQuestion);
     document.getElementById('restart-btn').addEventListener('click', restartTest);
     document.getElementById('new-test-btn').addEventListener('click', goHome);
     document.getElementById('certificate-btn').addEventListener('click', showCertificate);
 }
-// Старт теста
+
 function startTest(testId) {
-    console.log("=== НАЧАЛО ТЕСТА ===");
-    
     currentTest = tests.find(t => t.id === testId);
-    console.log("Выбран тест:", currentTest.name);
     
-    // Получаем ВСЕ вопросы для этого теста
     const allQuestions = questions.filter(q => q.testId === testId);
-    console.log(`Всего вопросов в тесте: ${allQuestions.length}`);
-    console.log("ID всех вопросов:", allQuestions.map(q => q.id));
-    
-    // Перемешиваем вопросы
     const shuffledQuestions = shuffleArray(allQuestions);
-    console.log("Перемешанные вопросы:", shuffledQuestions.map(q => q.id));
-    
-    // Берем только первые 10 вопросов (или меньше)
-    const questionsToShow = 10;
-    const questionsCount = Math.min(questionsToShow, allQuestions.length);
-    console.log(`Будет показано вопросов: ${questionsCount}`);
-    
-    // Записываем только выбранные вопросы
+    const questionsCount = Math.min(10, allQuestions.length);
     currentQuestions = shuffledQuestions.slice(0, questionsCount);
-    console.log("Выбранные вопросы:", currentQuestions.map(q => q.id));
     
-    console.log("=== КОНЕЦ ИНИЦИАЛИЗАЦИИ ===");
     currentQuestionIndex = 0;
     userAnswers = [];
     score = { correct: 0, totalPoints: 0, maxPoints: 0 };
     timeLeft = currentTest.timeLimit;
-    
-    // Рассчитать максимальное количество баллов
     score.maxPoints = currentQuestions.reduce((sum, q) => sum + q.points, 0);
     
-    // Переключить экраны
     document.getElementById('home-screen').classList.add('hidden');
     document.getElementById('test-screen').classList.remove('hidden');
     document.getElementById('results-screen').classList.add('hidden');
     
-    // Установить название теста
     document.getElementById('current-test-name').textContent = currentTest.name;
     
-    // Запустить таймер
     startTime = Date.now();
     clearInterval(timerInterval);
     timerInterval = setInterval(updateTimer, 1000);
     
-    // Показать первый вопрос
     showQuestion();
     updateProgress();
     updateScore();
 }
 
-// Показать текущий вопрос
 function showQuestion() {
     const question = currentQuestions[currentQuestionIndex];
     
-    // Номер вопроса
     document.getElementById('question-number').textContent = currentQuestionIndex + 1;
-    
-    // Текст вопроса
     document.getElementById('question-text').textContent = question.text;
-    
-    // Баллы за вопрос
     document.querySelector('.question-points').innerHTML = `<i class="fas fa-star"></i> ${question.points} балл${question.points > 1 ? 'а' : ''}`;
     
-    // Варианты ответов
     const answersContainer = document.getElementById('answers-container');
     answersContainer.innerHTML = '';
     
-    // Перемешать варианты ответов
     const shuffledAnswers = shuffleArray([...question.answers]);
     
     shuffledAnswers.forEach(answer => {
         const answerElement = document.createElement('div');
         answerElement.className = 'answer-option';
-        answerElement.innerHTML = `
-            <span class="answer-text">${answer.text}</span>
-        `;
+        answerElement.innerHTML = `<span class="answer-text">${answer.text}</span>`;
         answerElement.dataset.answerId = answer.id;
-        
         answerElement.addEventListener('click', () => selectAnswer(answer, shuffledAnswers));
-        
         answersContainer.appendChild(answerElement);
     });
     
-    // Скрыть объяснение и отключить кнопку "Далее"
     document.getElementById('explanation').classList.add('hidden');
     document.getElementById('next-btn').disabled = true;
     
-    // Обновить текст кнопки
     const nextBtn = document.getElementById('next-btn');
     if (currentQuestionIndex === currentQuestions.length - 1) {
         nextBtn.innerHTML = 'Завершить тест <i class="fas fa-flag-checkered"></i>';
@@ -238,21 +150,16 @@ function showQuestion() {
     }
 }
 
-// Выбрать ответ
 function selectAnswer(selectedAnswer, allAnswers) {
-    // Если ответ уже выбран, ничего не делаем
     if (document.querySelector('.answer-option.selected')) return;
     
     const question = currentQuestions[currentQuestionIndex];
     
-    // Отметить выбранный ответ
     const selectedElement = document.querySelector(`[data-answer-id="${selectedAnswer.id}"]`);
     selectedElement.classList.add('selected');
     
-    // Показать правильные/неправильные ответы
     allAnswers.forEach(answer => {
         const element = document.querySelector(`[data-answer-id="${answer.id}"]`);
-        
         if (answer.isCorrect) {
             element.classList.add('correct');
         } else if (answer.id === selectedAnswer.id && !answer.isCorrect) {
@@ -260,7 +167,6 @@ function selectAnswer(selectedAnswer, allAnswers) {
         }
     });
     
-    // Записать ответ пользователя
     userAnswers.push({
         questionId: question.id,
         selectedAnswerId: selectedAnswer.id,
@@ -268,25 +174,17 @@ function selectAnswer(selectedAnswer, allAnswers) {
         points: selectedAnswer.isCorrect ? question.points : 0
     });
     
-    // Обновить счет
     if (selectedAnswer.isCorrect) {
         score.correct++;
         score.totalPoints += question.points;
     }
     updateScore();
     
-    // Показать объяснение
     document.getElementById('explanation-text').textContent = question.explanation;
     document.getElementById('explanation').classList.remove('hidden');
-    
-    // Активировать кнопку "Далее"
     document.getElementById('next-btn').disabled = false;
-    
-    // Прокрутить к объяснению
-    document.getElementById('explanation').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// Следующий вопрос
 function nextQuestion() {
     currentQuestionIndex++;
     
@@ -298,15 +196,12 @@ function nextQuestion() {
     }
 }
 
-// Обновить прогресс
 function updateProgress() {
     const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
     document.getElementById('progress-fill').style.width = `${progress}%`;
-    document.getElementById('progress-text').textContent = 
-        `Вопрос ${currentQuestionIndex + 1} из ${currentQuestions.length}`;
+    document.getElementById('progress-text').textContent = `Вопрос ${currentQuestionIndex + 1} из ${currentQuestions.length}`;
 }
 
-// Обновить таймер
 function updateTimer() {
     timeLeft--;
     
@@ -319,11 +214,8 @@ function updateTimer() {
     
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
+    document.querySelector('#timer span').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     
-    document.querySelector('#timer span').textContent = 
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
-    // Изменение цвета при малом остатке времени
     if (timeLeft < 60) {
         document.getElementById('timer').style.background = '#e74c3c';
     } else if (timeLeft < 180) {
@@ -331,20 +223,15 @@ function updateTimer() {
     }
 }
 
-// Обновить счет
 function updateScore() {
     document.getElementById('correct-count').textContent = score.correct;
     document.getElementById('wrong-count').textContent = userAnswers.length - score.correct;
-    document.getElementById('remaining-count').textContent = 
-        currentQuestions.length - userAnswers.length;
+    document.getElementById('remaining-count').textContent = currentQuestions.length - userAnswers.length;
     
-    // Точность
-    const accuracy = userAnswers.length > 0 ? 
-        Math.round((score.correct / userAnswers.length) * 100) : 0;
+    const accuracy = userAnswers.length > 0 ? Math.round((score.correct / userAnswers.length) * 100) : 0;
     document.getElementById('accuracy').textContent = `${accuracy}%`;
 }
 
-// Завершить тест
 function finishTest() {
     clearInterval(timerInterval);
     
@@ -353,14 +240,10 @@ function finishTest() {
     const seconds = totalTime % 60;
     const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     
-    // Рассчитать процент правильных ответов
-    const percentage = score.maxPoints > 0 ? 
-        Math.round((score.totalPoints / score.maxPoints) * 100) : 0;
+    const percentage = score.maxPoints > 0 ? Math.round((score.totalPoints / score.maxPoints) * 100) : 0;
     
-    // Сохранить результат
     storage.saveResult(currentTest.id, percentage, totalTime);
     
-    // Обновить экран результатов
     document.getElementById('score-percent').textContent = `${percentage}%`;
     document.getElementById('final-correct').textContent = score.correct;
     document.getElementById('final-wrong').textContent = userAnswers.length - score.correct;
@@ -368,7 +251,6 @@ function finishTest() {
     document.getElementById('final-time').textContent = timeString;
     document.getElementById('user-greeting').textContent = `Поздравляем, ${userName}!`;
     
-    // Сообщение в зависимости от результата
     const message = document.getElementById('result-message');
     if (percentage >= 90) {
         message.textContent = 'Отличный результат! Вы настоящий эксперт!';
@@ -384,18 +266,14 @@ function finishTest() {
         message.style.color = '#e74c3c';
     }
     
-    // Отобразить обзор ответов
     displayAnswersReview();
     
-    // Переключить экраны
     document.getElementById('test-screen').classList.add('hidden');
     document.getElementById('results-screen').classList.remove('hidden');
     
-    // Прокрутить к началу
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Отобразить обзор ответов
 function displayAnswersReview() {
     const container = document.getElementById('answers-review-container');
     container.innerHTML = '';
@@ -408,29 +286,18 @@ function displayAnswersReview() {
         const reviewItem = document.createElement('div');
         reviewItem.className = `review-item ${userAnswer.isCorrect ? 'correct' : 'incorrect'}`;
         reviewItem.innerHTML = `
-            <div class="review-question">
-                <strong>Вопрос ${index + 1}:</strong> ${question.text}
-            </div>
+            <div class="review-question"><strong>Вопрос ${index + 1}:</strong> ${question.text}</div>
             <div class="review-answer ${userAnswer.isCorrect ? 'correct' : 'incorrect'}">
                 <i class="fas fa-${userAnswer.isCorrect ? 'check' : 'times'}"></i>
                 <span><strong>Ваш ответ:</strong> ${selectedAnswer.text}</span>
             </div>
-            ${!userAnswer.isCorrect ? `
-                <div class="review-answer correct">
-                    <i class="fas fa-check"></i>
-                    <span><strong>Правильный ответ:</strong> ${correctAnswer.text}</span>
-                </div>
-            ` : ''}
-            <div class="review-explanation">
-                <i class="fas fa-info-circle"></i> ${question.explanation}
-            </div>
+            ${!userAnswer.isCorrect ? `<div class="review-answer correct"><i class="fas fa-check"></i> <span><strong>Правильный ответ:</strong> ${correctAnswer.text}</span></div>` : ''}
+            <div class="review-explanation"><i class="fas fa-info-circle"></i> ${question.explanation}</div>
         `;
-        
         container.appendChild(reviewItem);
     });
 }
 
-// Вернуться на главную
 function goHome() {
     clearInterval(timerInterval);
     
@@ -438,84 +305,33 @@ function goHome() {
     document.getElementById('test-screen').classList.add('hidden');
     document.getElementById('results-screen').classList.add('hidden');
     
-    // Обновить статистику
     updateStats();
-    
-    // Прокрутить к началу
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Начать тест заново
 function restartTest() {
     if (currentTest) {
         startTest(currentTest.id);
     }
 }
 
-// Показать сертификат
 function showCertificate() {
     const percentage = Math.round((score.totalPoints / score.maxPoints) * 100);
-    
-    const certificate = window.open('', '_blank');
-    certificate.document.write(`
+    const certWindow = window.open('', '_blank');
+    certWindow.document.write(`
         <!DOCTYPE html>
         <html>
-        <head>
-            <title>Сертификат - ${currentTest.name}</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    text-align: center;
-                    padding: 50px;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    min-height: 100vh;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .certificate {
-                    background: white;
-                    padding: 60px;
-                    border-radius: 20px;
-                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                    max-width: 800px;
-                    border: 20px solid #f1c40f;
-                    position: relative;
-                }
-                h1 {
-                    color: #2c3e50;
-                    margin-bottom: 30px;
-                }
-                .score {
-                    font-size: 72px;
-                    color: #e74c3c;
-                    margin: 30px 0;
-                    font-weight: bold;
-                }
-                .info {
-                    margin: 20px 0;
-                    font-size: 18px;
-                    color: #555;
-                }
-                .signature {
-                    margin-top: 50px;
-                    display: flex;
-                    justify-content: space-between;
-                    padding-top: 30px;
-                    border-top: 2px solid #ddd;
-                }
-                .date {
-                    margin-top: 30px;
-                    color: #777;
-                }
-                .logo {
-                    position: absolute;
-                    top: 20px;
-                    right: 20px;
-                    font-size: 24px;
-                    color: #3498db;
-                }
-            </style>
+        <head><title>Сертификат - ${currentTest.name}</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+            .certificate { background: white; padding: 60px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; border: 20px solid #f1c40f; position: relative; }
+            h1 { color: #2c3e50; margin-bottom: 30px; }
+            .score { font-size: 72px; color: #e74c3c; margin: 30px 0; font-weight: bold; }
+            .info { margin: 20px 0; font-size: 18px; color: #555; }
+            .signature { margin-top: 50px; display: flex; justify-content: space-between; padding-top: 30px; border-top: 2px solid #ddd; }
+            .date { margin-top: 30px; color: #777; }
+            .logo { position: absolute; top: 20px; right: 20px; font-size: 24px; color: #3498db; }
+        </style>
         </head>
         <body>
             <div class="certificate">
@@ -528,79 +344,30 @@ function showCertificate() {
                 <div class="score">${percentage}%</div>
                 <p class="info">Правильных ответов: ${score.correct} из ${currentQuestions.length}</p>
                 <div class="signature">
-                    <div>
-                        <p>___________________</p>
-                        <p>Подпись участника</p>
-                    </div>
-                    <div>
-                        <p>___________________</p>
-                        <p>Подпись руководителя</p>
-                    </div>
+                    <div><p>___________________</p><p>Подпись участника</p></div>
+                    <div><p>___________________</p><p>Подпись руководителя</p></div>
                 </div>
                 <div class="date">Дата: ${new Date().toLocaleDateString('ru-RU')}</div>
             </div>
         </body>
         </html>
     `);
-    certificate.document.close();
+    certWindow.document.close();
 }
 
-// Обновить статистику
 function updateStats() {
     const bestScore = storage.getBestScore(currentTest ? currentTest.id : 1);
     document.getElementById('best-score').textContent = bestScore > 0 ? `${bestScore}%` : '0%';
 }
 
-// Показать уведомление
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
-        <span>${message}</span>
-    `;
-    
-    // Стили для уведомления
-    const style = document.createElement('style');
-    style.textContent = `
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 10px;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .notification-success { background: #2ecc71; }
-        .notification-warning { background: #f39c12; }
-        .notification-info { background: #3498db; }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-    `;
-    document.head.appendChild(style);
-    
+    notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i><span>${message}</span>`;
     document.body.appendChild(notification);
-    
-    // Удалить уведомление через 3 секунды
-    setTimeout(() => {
-        notification.remove();
-        style.remove();
-    }, 3000);
+    setTimeout(() => notification.remove(), 3000);
 }
 
-// Вспомогательные функции
 function shuffleArray(array) {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -610,157 +377,78 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-// Экспорт для использования в консоли (для отладки)
-window.ElectroTest = {
-    tests,
-    questions,
-    storage,
-    restartTest,
-    goHome
-};
-// Регистрация Service Worker для PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('ServiceWorker зарегистрирован:', registration);
-      })
-      .catch(error => {
-        console.log('Ошибка регистрации ServiceWorker:', error);
-      });
-  });
-}
+// ========== ПЛАВАЮЩАЯ КНОПКА И МОДАЛЬНОЕ ОКНО ==========
 
-// Определяем, установлено ли приложение
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  window.deferredPrompt = e;
-  
-  // Показываем кнопку "Установить"
-  showInstallButton();
-});
-
-function showInstallButton() {
-  const installBtn = document.createElement('button');
-  installBtn.id = 'install-btn';
-  installBtn.innerHTML = '📱 Установить приложение';
-  installBtn.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    background: #2ecc71;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    font-weight: bold;
-  `;
-  
-  installBtn.addEventListener('click', async () => {
-    if (!window.deferredPrompt) return;
+function setupFloatingButton() {
+    const floatingBtn = document.getElementById('floating-error-btn');
+    const modal = document.getElementById('errorModal');
+    const closeSpan = document.querySelector('.modal-close');
+    const cancelBtn = document.getElementById('cancelErrorBtn');
+    const errorForm = document.getElementById('errorForm');
     
-    window.deferredPrompt.prompt();
-    const { outcome } = await window.deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('Пользователь установил приложение');
-      installBtn.remove();
+    // Открытие модального окна
+    if (floatingBtn) {
+        floatingBtn.onclick = function() {
+            if (modal) {
+                // Заполняем данные, если есть текущий тест
+                if (currentTest && currentQuestions && currentQuestions[currentQuestionIndex]) {
+                    const q = currentQuestions[currentQuestionIndex];
+                    const testNameInput = document.getElementById('errorTestName');
+                    const questionIdInput = document.getElementById('errorQuestionId');
+                    const questionTextInput = document.getElementById('errorQuestionText');
+                    if (testNameInput) testNameInput.value = currentTest.name;
+                    if (questionIdInput) questionIdInput.value = q.id;
+                    if (questionTextInput) questionTextInput.value = q.text;
+                }
+                modal.style.display = 'flex';
+            }
+        };
+        console.log('✅ Кнопка "Сообщить об ошибке" работает!');
     }
     
-    window.deferredPrompt = null;
-  });
-  
-  document.body.appendChild(installBtn);
-}
-// В ваш script.js добавьте:
-
-// Проверяем, поддерживаются ли вкладки
-if ('launchQueue' in window && 'targets' in LaunchParams.prototype) {
-  console.log('Вкладки PWA поддерживаются');
-  
-  // Обработка запуска приложения
-  window.launchQueue.setConsumer(async (launchParams) => {
-    if (launchParams.targets && launchParams.targets.length > 0) {
-      // Приложение открыто из другой вкладки или ссылки
-      handleNewTab(launchParams.targets[0]);
+    // Закрытие окна
+    if (closeSpan) closeSpan.onclick = function() { if (modal) modal.style.display = 'none'; };
+    if (cancelBtn) cancelBtn.onclick = function() { if (modal) modal.style.display = 'none'; };
+    if (modal) modal.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
+    
+    // Отправка формы
+    if (errorForm) {
+        errorForm.onsubmit = function(e) {
+            e.preventDefault();
+            
+            const description = document.getElementById('errorDescription').value.trim();
+            if (!description) {
+                alert('❌ Пожалуйста, опишите ошибку!');
+                return;
+            }
+            
+            const errorData = {
+                testName: document.getElementById('errorTestName').value || 'не указан',
+                questionId: document.getElementById('errorQuestionId').value || 'не указан',
+                questionText: document.getElementById('errorQuestionText').value || 'не указан',
+                errorType: document.getElementById('errorType').value,
+                description: description,
+                email: document.getElementById('userEmail').value || 'не указан',
+                userName: userName || localStorage.getItem('electrotest_username') || 'Аноним',
+                date: new Date().toLocaleString('ru-RU')
+            };
+            
+            // Сохраняем в localStorage
+            let errors = JSON.parse(localStorage.getItem('electrotest_errors') || '[]');
+            errors.push(errorData);
+            localStorage.setItem('electrotest_errors', JSON.stringify(errors));
+            
+            console.log('✅ Ошибка сохранена:', errorData);
+            console.table(errors);
+            
+            alert('✅ Спасибо! Сообщение об ошибке сохранено.\n\nОтправьте разработчику: wolf57867@gmail.com');
+            
+            // Очищаем форму и закрываем
+            errorForm.reset();
+            if (modal) modal.style.display = 'none';
+        };
     }
-  });
 }
 
-function handleNewTab(target) {
-  // Можно открыть новый тест или контент
-  console.log('Новая вкладка:', target);
-  
-  // Например, если ссылка ведет на конкретный тест
-  if (target.url.includes('test=')) {
-    const testId = new URL(target.url).searchParams.get('test');
-    startTest(parseInt(testId));
-  }
-}
-
-// Создание новой вкладки
-function createNewTab(url) {
-  if (window.open) {
-    window.open(url, '_blank');
-  }
-}
-
-// Кнопка "Новый тест" в приложении
-document.addEventListener('DOMContentLoaded', function() {
-  const newTestBtn = document.createElement('button');
-  newTestBtn.textContent = '➕ Новый тест';
-  newTestBtn.className = 'btn';
-  newTestBtn.onclick = () => createNewTab('/index.html');
-  
-  // Добавьте кнопку в интерфейс
-  document.querySelector('.controls')?.appendChild(newTestBtn);
-});
-// Обработка ссылок из других приложений
-if ('windowControlsOverlay' in navigator) {
-  navigator.windowControlsOverlay.addEventListener('geometrychange', (event) => {
-    // Окно изменило размер/положение
-    console.log('Window geometry changed:', event);
-  });
-}
-
-// Если пользователь кликнул на ссылку где-то еще
-if (document.referrer) {
-  console.log('Пришли из:', document.referrer);
-  
-  // Проверяем параметры URL
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('test')) {
-    // Автоматически запускаем тест
-    const testId = urlParams.get('test');
-    setTimeout(() => startTest(parseInt(testId)), 500);
-  }
-}
-// 1. Убедись, что иконка действительно видна на странице
-const icon = document.querySelector('i.fa-bolt');
-icon.style.border = '3px solid red'; // Добавим красную рамку
-
-// 2. Проверим координаты иконки
-const rect = icon.getBoundingClientRect();
-console.log('Позиция иконки:', {
-    top: rect.top,
-    left: rect.left,
-    width: rect.width,
-    height: rect.height,
-    visible: rect.width > 0 && rect.height > 0
-});
-
-// 3. Проверим, не перекрыта ли иконка другим элементом
-console.log('Элемент в точке иконки:', document.elementFromPoint(rect.left + 10, rect.top + 10));
-// регаем сервис воркер
-window.addEventListener('load', () => {
-navigator.serviceWorker.register('/service-worker.js')
-.then((registration) => {
-console.log('Service Worker зарегистрирован:', registration);
-})
-.catch((error) => {
-console.error('Ошибка регистрации Service Worker:', error);
-});
-});
+// Экспорт для отладки
+window.ElectroTest = { tests, questions, storage, restartTest, goHome };

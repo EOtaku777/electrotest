@@ -5,39 +5,139 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ЭлектроТест - Тесты по электромонтажу РБ</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <!-- Используй jsDelivr вместо cdnjs -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <!-- PWA мета-теги -->
-<meta name="application-name" content="ЭлектроТест">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ЭлектроТест">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#764ba2">
-
-<!-- Иконки для разных платформ -->
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.svg">
-<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.svg">
-<link rel="apple-touch-icon" href="icons/icon-192x192.png">
-
-<!-- Манифест PWA -->
-<link rel="manifest" href="manifest.json">
-    <script>
-// Регистрация Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/electrotest/sw.js')
-      .then(function(registration) {
-        console.log('ServiceWorker зарегистрирован:', registration.scope);
-      })
-      .catch(function(error) {
-        console.log('Ошибка регистрации ServiceWorker:', error);
-      });
-  });
-}
-</script>
+    <style>
+        /* Дополнительные стили для плавающей кнопки и модального окна */
+        #floating-error-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 28px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        #floating-error-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .modal-header h3 {
+            margin: 0;
+            color: #e74c3c;
+            font-size: 1.3rem;
+        }
+        .modal-close {
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: #e74c3c;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.85rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+        .form-group input[readonly],
+        .form-group textarea[readonly] {
+            background: #f8f9fa;
+            color: #555;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+        .btn-submit {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-submit:hover {
+            background: #c0392b;
+        }
+    </style>
 </head>
 <body>
     <div class="container" id="app">
@@ -58,66 +158,38 @@ if ('serviceWorker' in navigator) {
             
             <main class="main-content">
                 <h2><i class="fas fa-list"></i> Выберите тест для прохождения:</h2>
-                <div class="tests-grid" id="tests-container">
-                    <!-- Тесты будут загружены через JavaScript -->
-                </div>
+                <div class="tests-grid" id="tests-container"></div>
                 
                 <div class="stats">
-                    <div class="stat-item">
-                        <i class="fas fa-question-circle"></i>
-                        <h3>Вопросов в базе</h3>
-                        <p id="total-questions">0</p>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-clipboard-list"></i>
-                        <h3>Доступных тестов</h3>
-                        <p id="total-tests">0</p>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-award"></i>
-                        <h3>Лучший результат</h3>
-                        <p id="best-score">0%</p>
-                    </div>
+                    <div class="stat-item"><i class="fas fa-question-circle"></i><h3>Вопросов в базе</h3><p id="total-questions">0</p></div>
+                    <div class="stat-item"><i class="fas fa-clipboard-list"></i><h3>Доступных тестов</h3><p id="total-tests">0</p></div>
+                    <div class="stat-item"><i class="fas fa-award"></i><h3>Лучший результат</h3><p id="best-score">0%</p></div>
                 </div>
                 
                 <div class="instructions">
                     <h3><i class="fas fa-info-circle"></i> Инструкция:</h3>
-                    <ol>
-                        <li>Выберите тест из списка</li>
-                        <li>Ответьте на все вопросы</li>
-                        <li>Посмотрите результат и объяснения</li>
-                        <li>При необходимости пройдите тест снова</li>
-                    </ol>
+                    <ol><li>Выберите тест из списка</li><li>Ответьте на все вопросы</li><li>Посмотрите результат и объяснения</li><li>При необходимости пройдите тест снова</li></ol>
                 </div>
             </main>
-            <h4>Почта для обратной связи с разработчиком wolf57867@gmail.com</h4>
             
             <footer class="footer">
                 <p>© 2024 ЭлектроТест. Для обучения и самопроверки.</p>
-                <p class="version">Версия 1.0</p>
+                <p>📧 Для связи: wolf57867@gmail.com</p>
             </footer>
         </div>
 
         <!-- Экран тестирования -->
         <div id="test-screen" class="hidden">
             <div class="test-header">
-                <button class="btn btn-secondary" id="back-btn">
-                    <i class="fas fa-arrow-left"></i> Назад
-                </button>
-                
+                <button class="btn btn-secondary" id="back-btn"><i class="fas fa-arrow-left"></i> Назад</button>
                 <div class="test-info">
                     <h3 id="current-test-name">Название теста</h3>
                     <div class="progress-container">
                         <span id="progress-text">Вопрос 1 из 10</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-fill"></div>
-                        </div>
+                        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
                     </div>
                 </div>
-                
-                <div class="timer" id="timer">
-                    <i class="fas fa-clock"></i> <span>00:00</span>
-                </div>
+                <div class="timer" id="timer"><i class="fas fa-clock"></i> <span>00:00</span></div>
             </div>
 
             <div class="question-card">
@@ -125,49 +197,21 @@ if ('serviceWorker' in navigator) {
                     <span class="question-number">Вопрос #<span id="question-number">1</span></span>
                     <span class="question-points"><i class="fas fa-star"></i> 1 балл</span>
                 </div>
-                
                 <h3 id="question-text">Текст вопроса появится здесь</h3>
-                
-                <div id="answers-container">
-                    <!-- Варианты ответов будут загружены через JavaScript -->
-                </div>
-                
-                <div id="explanation" class="hidden">
-                    <h4><i class="fas fa-lightbulb"></i> Объяснение:</h4>
-                    <p id="explanation-text"></p>
-                </div>
+                <div id="answers-container"></div>
+                <div id="explanation" class="hidden"><h4><i class="fas fa-lightbulb"></i> Объяснение:</h4><p id="explanation-text"></p></div>
             </div>
 
             <div class="controls">
-                <div class="hint">
-                    <i class="fas fa-mouse-pointer"></i> Выберите один вариант ответа
-                </div>
-                <button class="btn" id="next-btn" disabled>
-                    Следующий вопрос <i class="fas fa-arrow-right"></i>
-                </button>
+                <div class="hint"><i class="fas fa-mouse-pointer"></i> Выберите один вариант ответа</div>
+                <button class="btn" id="next-btn" disabled>Следующий вопрос <i class="fas fa-arrow-right"></i></button>
             </div>
 
             <div class="stats">
-                <div class="stat-item">
-                    <i class="fas fa-check-circle"></i>
-                    <h3>Правильно</h3>
-                    <p id="correct-count">0</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-times-circle"></i>
-                    <h3>Неправильно</h3>
-                    <p id="wrong-count">0</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-hourglass-half"></i>
-                    <h3>Осталось</h3>
-                    <p id="remaining-count">0</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-percentage"></i>
-                    <h3>Точность</h3>
-                    <p id="accuracy">0%</p>
-                </div>
+                <div class="stat-item"><i class="fas fa-check-circle"></i><h3>Правильно</h3><p id="correct-count">0</p></div>
+                <div class="stat-item"><i class="fas fa-times-circle"></i><h3>Неправильно</h3><p id="wrong-count">0</p></div>
+                <div class="stat-item"><i class="fas fa-hourglass-half"></i><h3>Осталось</h3><p id="remaining-count">0</p></div>
+                <div class="stat-item"><i class="fas fa-percentage"></i><h3>Точность</h3><p id="accuracy">0%</p></div>
             </div>
         </div>
 
@@ -179,11 +223,7 @@ if ('serviceWorker' in navigator) {
             </div>
             
             <div class="score-card">
-                <div class="score-circle">
-                    <div class="score-percent" id="score-percent">0%</div>
-                    <div class="score-label">Ваш результат</div>
-                </div>
-                
+                <div class="score-circle"><div class="score-percent" id="score-percent">0%</div><div class="score-label">Ваш результат</div></div>
                 <div class="score-message">
                     <h3 id="result-message">Оцениваю результат...</h3>
                     <div class="result-details">
@@ -195,44 +235,69 @@ if ('serviceWorker' in navigator) {
                 </div>
             </div>
             
-            <div class="answers-review">
-                <h3><i class="fas fa-chart-bar"></i> Обзор ответов:</h3>
-                <div id="answers-review-container">
-                    <!-- Обзор ответов будет здесь -->
-                </div>
-            </div>
+            <div class="answers-review"><h3><i class="fas fa-chart-bar"></i> Обзор ответов:</h3><div id="answers-review-container"></div></div>
             
             <div class="results-actions">
-                <button class="btn btn-secondary" id="restart-btn">
-                    <i class="fas fa-redo"></i> Пройти заново
-                </button>
-                <button class="btn" id="new-test-btn">
-                    <i class="fas fa-book"></i> Выбрать другой тест
-                </button>
-                <button class="btn btn-success" id="certificate-btn">
-                    <i class="fas fa-certificate"></i> Сертификат
-                </button>
+                <button class="btn btn-secondary" id="restart-btn"><i class="fas fa-redo"></i> Пройти заново</button>
+                <button class="btn" id="new-test-btn"><i class="fas fa-book"></i> Выбрать другой тест</button>
+                <button class="btn btn-success" id="certificate-btn"><i class="fas fa-certificate"></i> Сертификат</button>
             </div>
             
-            <div class="motivation">
-                <p><i class="fas fa-quote-left"></i> Знания по электробезопасности — это не просто требования, это спасённые жизни. <i class="fas fa-quote-right"></i></p>
-            </div>
+            <div class="motivation"><p><i class="fas fa-quote-left"></i> Знания по электробезопасности — это не просто требования, это спасённые жизни. <i class="fas fa-quote-right"></i></p></div>
         </div>
     </div>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');
-  });
-}
-</script>
-    <!-- Подключаем файлы JavaScript -->
+
+    <!-- ПЛАВАЮЩАЯ КНОПКА "СООБЩИТЬ ОБ ОШИБКЕ" -->
+    <button id="floating-error-btn" title="Сообщить об ошибке">
+        🐛
+    </button>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОШИБОК (все поля editable) -->
+    <div id="errorModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🐛 Сообщить об ошибке</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <form id="errorForm">
+                <div class="form-group">
+                    <label>📚 Тест:</label>
+                    <input type="text" id="errorTestName" placeholder="Название теста">
+                </div>
+                <div class="form-group">
+                    <label>🆔 ID вопроса:</label>
+                    <input type="text" id="errorQuestionId" placeholder="ID вопроса">
+                </div>
+                <div class="form-group">
+                    <label>❓ Текст вопроса:</label>
+                    <textarea id="errorQuestionText" rows="3" placeholder="Текст вопроса"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>📋 Тип ошибки:</label>
+                    <select id="errorType">
+                        <option value="Орфографическая / грамматическая ошибка">Орфографическая / грамматическая ошибка</option>
+                        <option value="Неправильный ответ">Неправильный ответ</option>
+                        <option value="Некорректное пояснение">Некорректное пояснение</option>
+                        <option value="Другое">Другое</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📝 Описание ошибки:</label>
+                    <textarea id="errorDescription" rows="4" placeholder="Опишите, в чём заключается ошибка..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>📧 Ваш email (необязательно):</label>
+                    <input type="email" id="userEmail" placeholder="example@mail.ru">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="cancelErrorBtn">Отмена</button>
+                    <button type="submit" class="btn-submit">📤 Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
-
-
-
-
