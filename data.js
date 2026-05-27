@@ -19,13 +19,13 @@ const tests = [
         timeLimit: 900 // 15 минут
     },
     {
-        id: 3,
-        name: "ТКП 181-2009",
-        description: "Не актуален с 2025 года",
-        icon: "fas fa-cogs",
-        color: "#9b59b6",
-        difficulty: "Сложный",
-        timeLimit: 480 // 8 минут
+        id: 12,
+        name: "ТКП290-2023",
+        description: "Правила применения и испытания средств защиты, используемых в электроустановках",
+        icon: "fas fa-user-shield",
+        color: "#aa035f",
+        difficulty: "Лёгкий",
+        timeLimit: 720 // 12 минут
     },
     {
         id: 4,
@@ -100,13 +100,13 @@ const tests = [
         timeLimit: 720 // 12 минут
     },
     {
-        id: 12,
-        name: "ТКП290-2023",
-        description: "Правила применения и испытания средств защиты, используемых в электроустановках",
-        icon: "fas fa-user-shield",
-        color: "#aa035f",
-        difficulty: "Лёгкий",
-        timeLimit: 720 // 12 минут
+        id: 3,
+        name: "ТКП 181-2009",
+        description: "Не актуален с 2025 года",
+        icon: "fas fa-cogs",
+        color: "#9b59b6",
+        difficulty: "Сложный",
+        timeLimit: 480 // 8 минут
     },
 
 ];

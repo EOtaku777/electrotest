@@ -909,14 +909,14 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 2px solid #e74c3c;
+    border-bottom: 2px solid #0ae6ee;
     background: #f8f9fa;
     border-radius: 16px 16px 0 0;
 }
 
 .modal-header h3 {
     margin: 0;
-    color: #e74c3c;
+    color: #f1eceb;
     font-size: 1.2rem;
 }
 
@@ -1080,7 +1080,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    background: #e74c3c;
+    background: #134400;
     color: white;
     border-radius: 20px 20px 0 0;
 }
@@ -1135,7 +1135,7 @@ body {
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #e74c3c;
+    border-color: #f5f0f0;
 }
 
 .form-group input[readonly],

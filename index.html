@@ -2,34 +2,240 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЭлектроТест - Тесты по электромонтажу РБ</title>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ЭлектроТест | Промышленная электробезопасность</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Дополнительные стили для плавающей кнопки и модального окна */
-        #floating-error-btn {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        body.dark { background: #0A0C10; color: #E8EDF2; }
+        body.light { background: #F0F2F5; color: #1A1F2A; }
+
+        body.light .sidebar { background: #FFFFFF; border-right-color: #E0E4E8; }
+        body.light .nav-item { color: #5A6270; }
+        body.light .nav-item.active { background: #F0F2F5; color: #E67E22; }
+        body.light .stat-card, body.light .info-card, body.light .tests-section,
+        body.light .question-card, body.light .modal-content { background: #FFFFFF; border-color: #E0E4E8; }
+        body.light .answer-option, body.light .small-stat, body.light .test-card-item { background: #F8F9FA; border-color: #E0E4E8; }
+        body.light .timer { background: #E8ECF0; color: #1A1F2A; }
+        body.light .btn-secondary { background: #E8ECF0; color: #1A1F2A; }
+
+        .app-wrapper { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 280px;
+            padding: 24px 20px;
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #e74c3c;
-            color: white;
-            border: none;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        body.dark .sidebar { background: #0F1117; border-right: 1px solid #1E2430; }
+        body.light .sidebar { background: #FFFFFF; border-right: 1px solid #E0E4E8; }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-left: 8px;
             cursor: pointer;
-            z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            font-size: 28px;
-            transition: transform 0.2s, background 0.2s;
         }
-        #floating-error-btn:hover {
-            background: #c0392b;
-            transform: scale(1.05);
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #FFD54F, #FFB74D);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #E65100;
         }
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFD54F, #FFB74D);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sidebar-user {
+            margin-bottom: 30px;
+            padding: 12px;
+            background: rgba(255, 213, 79, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-user-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD54F, #FFB74D);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #E65100;
+            font-size: 20px;
+        }
+        .sidebar-user-info { flex: 1; }
+        .sidebar-user-name { font-weight: 600; font-size: 14px; cursor: pointer; }
+        .sidebar-user-edit { font-size: 12px; color: #8E95A5; cursor: pointer; }
+
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; margin-bottom: 30px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        body.dark .nav-item { color: #8E95A5; }
+        body.light .nav-item { color: #5A6270; }
+        .nav-item.active { background: rgba(255, 213, 79, 0.15); color: #FFB74D; }
+        .nav-item i { width: 24px; font-size: 1.2rem; }
+
+        .theme-toggle {
+            margin-top: 20px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+        body.dark .theme-toggle { background: #1A1F2A; }
+        body.light .theme-toggle { background: #E8ECF0; }
+
+        .main-content { flex: 1; margin-left: 280px; padding: 24px 32px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            border-radius: 16px;
+            padding: 12px 16px;
+        }
+        body.dark .stat-card { background: #0F1117; border: 1px solid #1E2430; }
+        body.light .stat-card { background: #FFFFFF; border: 1px solid #E0E4E8; }
+        .stat-title { font-size: 11px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        body.dark .stat-title { color: #8E95A5; }
+        body.light .stat-title { color: #6B7280; }
+        .stat-value { font-size: 24px; font-weight: 700; color: #2ECC71; }
+        .stat-trend { font-size: 10px; color: #2ECC71; }
+
+        .double-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+        .info-card { border-radius: 20px; padding: 16px 20px; }
+        body.dark .info-card { background: #0F1117; border: 1px solid #1E2430; }
+        body.light .info-card { background: #FFFFFF; border: 1px solid #E0E4E8; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-weight: 600; font-size: 13px; }
+
+        .status-badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .status-pass { background: rgba(46, 204, 113, 0.15); color: #2ECC71; }
+        .status-fail { background: rgba(231, 76, 60, 0.15); color: #E74C3C; }
+        .status-progress { background: rgba(245, 166, 35, 0.15); color: #F5A623; }
+
+        .best-result-item { padding: 8px 0; border-bottom: 1px solid rgba(128, 128, 128, 0.2); }
+        .best-result-name { font-weight: 600; font-size: 13px; }
+        .best-result-stats { font-size: 11px; color: #8E95A5; margin-top: 4px; display: flex; gap: 12px; }
+
+        .progress-bar-container { height: 6px; background: #1E2430; border-radius: 3px; margin: 12px 0; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #F5A623, #2ECC71); border-radius: 3px; transition: width 0.3s; }
+
+        .tests-section { border-radius: 24px; overflow: hidden; }
+        body.dark .tests-section { background: #0F1117; border: 1px solid #1E2430; }
+        body.light .tests-section { background: #FFFFFF; border: 1px solid #E0E4E8; }
+        .section-header { padding: 16px 20px; border-bottom: 1px solid; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; }
+        body.dark .section-header { border-bottom-color: #1E2430; }
+        body.light .section-header { border-bottom-color: #E0E4E8; }
+
+        .tests-grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; padding: 20px; }
+        .test-card-item { border-radius: 20px; padding: 18px; transition: all 0.2s; cursor: pointer; }
+        body.dark .test-card-item { background: #151A22; border: 1px solid #252C38; }
+        body.light .test-card-item { background: #F8F9FA; border: 1px solid #E0E4E8; }
+        .test-card-item:hover { border-color: #FFB74D; transform: translateY(-2px); }
+        .test-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .test-card-header h4 { font-size: 15px; font-weight: 600; }
+        .test-card-desc { font-size: 12px; margin-bottom: 12px; line-height: 1.4; }
+        body.dark .test-card-desc { color: #8E95A5; }
+        body.light .test-card-desc { color: #6B7280; }
+        .test-card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 10px; }
+        .test-card-stats { display: flex; gap: 12px; font-size: 11px; }
+        body.dark .test-card-stats { color: #8E95A5; }
+        body.light .test-card-stats { color: #6B7280; }
+
+        .btn-small {
+            background: linear-gradient(135deg, #F5A623, #E67E22);
+            border: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #F5A623, #E67E22);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3); }
+        .btn-secondary { background: #1E2430; color: #E8EDF2; }
+        body.light .btn-secondary { background: #E8ECF0; color: #1A1F2A; }
+
+        .footer { margin-top: 48px; padding: 24px 20px; text-align: center; font-size: 12px; border-top: 1px solid; }
+        body.dark .footer { border-top-color: #1E2430; color: #8E95A5; }
+        body.light .footer { border-top-color: #E0E4E8; color: #6B7280; }
+
+        /* Стили для ответов */
+        .answer-option {
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin: 12px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        body.dark .answer-option { background: #151A22; border: 1px solid #252C38; }
+        body.light .answer-option { background: #F8F9FA; border: 1px solid #E0E4E8; }
+        .answer-option:hover { border-color: #FFB74D; transform: translateX(4px); }
+        .answer-option.selected { border-color: #FFB74D; background: rgba(255, 183, 77, 0.15); }
+        .answer-option.correct { background: rgba(46, 204, 113, 0.25) !important; border-color: #2ECC71 !important; }
+        .answer-option.wrong { background: rgba(231, 76, 60, 0.25) !important; border-color: #E74C3C !important; }
+
+        .timer { padding: 8px 20px; border-radius: 40px; font-family: monospace; font-size: 1.2rem; font-weight: 600; }
+        body.dark .timer { background: #1E2430; }
+        body.light .timer { background: #E8ECF0; }
+
+        .small-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+        .small-stat { padding: 8px 16px; border-radius: 40px; font-size: 12px; }
+        body.dark .small-stat { background: #151A22; }
+        body.light .small-stat { background: #F8F9FA; border: 1px solid #E0E4E8; }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -37,267 +243,357 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
             z-index: 10000;
             justify-content: center;
             align-items: center;
         }
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 25px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #e74c3c;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-        }
-        .modal-header h3 {
-            margin: 0;
-            color: #e74c3c;
-            font-size: 1.3rem;
-        }
-        .modal-close {
-            font-size: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #999;
-            transition: color 0.2s;
-        }
-        .modal-close:hover {
-            color: #e74c3c;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 0.85rem;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            box-sizing: border-box;
-        }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #e74c3c;
-        }
-        .form-group input[readonly],
-        .form-group textarea[readonly] {
-            background: #f8f9fa;
-            color: #555;
-        }
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .btn-cancel {
-            background: #95a5a6;
-            color: white;
+        .modal-content { border-radius: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 24px; }
+        body.dark .modal-content { background: #0F1117; border: 1px solid #1E2430; }
+        body.light .modal-content { background: #FFFFFF; border: 1px solid #E0E4E8; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid; }
+        body.dark .modal-header { border-bottom-color: #1E2430; }
+        body.light .modal-header { border-bottom-color: #E0E4E8; }
+        .modal-close { font-size: 28px; cursor: pointer; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border-radius: 12px; font-family: inherit; }
+        body.dark .form-group input, body.dark .form-group select, body.dark .form-group textarea { background: #151A22; border: 1px solid #252C38; color: #E8EDF2; }
+        body.light .form-group input, body.light .form-group select, body.light .form-group textarea { background: #F8F9FA; border: 1px solid #E0E4E8; color: #1A1F2A; }
+
+        .floating-error-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #E74C3C;
             border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-cancel:hover {
-            background: #7f8c8d;
-        }
-        .btn-submit {
-            background: #e74c3c;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 24px;
             color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
         }
-        .btn-submit:hover {
-            background: #c0392b;
+        .floating-error-btn:hover { transform: scale(1.05); background: #c0392b; }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .tests-grid-cards { grid-template-columns: 1fr; }
         }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 20px 16px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .double-grid { grid-template-columns: 1fr; }
+        }
+        html { scroll-behavior: smooth; }
     </style>
 </head>
-<body>
-    <div class="container" id="app">
-        <!-- Экран выбора теста -->
-        <div id="home-screen">
-            <header class="header">
-                <h1><i class="fas fa-bolt"></i> ЭлектроТест</h1>
-                <p class="subtitle">Проверка знаний строительных правил электромонтажа Республики Беларусь</p>
-            </header>
-            
-            <div class="user-info">
-                <div class="user-input">
-                    <label for="user-name"><i class="fas fa-user"></i> Ваше имя:</label>
-                    <input type="text" id="user-name" placeholder="Введите ваше имя" value="Электрик">
-                </div>
-                <button class="btn" id="save-name-btn"><i class="fas fa-save"></i> Сохранить</button>
+<body class="dark">
+    <div class="app-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-area" id="logoHomeBtn">
+                <div class="logo-icon">⚡</div>
+                <div class="logo-text">ЭлектроТест</div>
             </div>
-            
-            <main class="main-content">
-                <h2><i class="fas fa-list"></i> Выберите тест для прохождения:</h2>
-                <div class="tests-grid" id="tests-container"></div>
-                
-                <div class="stats">
-                    <div class="stat-item"><i class="fas fa-question-circle"></i><h3>Вопросов в базе</h3><p id="total-questions">0</p></div>
-                    <div class="stat-item"><i class="fas fa-clipboard-list"></i><h3>Доступных тестов</h3><p id="total-tests">0</p></div>
-                    <div class="stat-item"><i class="fas fa-award"></i><h3>Лучший результат</h3><p id="best-score">0%</p></div>
-                </div>
-                
-                <div class="instructions">
-                    <h3><i class="fas fa-info-circle"></i> Инструкция:</h3>
-                    <ol><li>Выберите тест из списка</li><li>Ответьте на все вопросы</li><li>Посмотрите результат и объяснения</li><li>При необходимости пройдите тест снова</li></ol>
-                </div>
-            </main>
-            
-            <footer class="footer">
-                <p>© 2024 ЭлектроТест. Для обучения и самопроверки.</p>
-                <p>📧 Для связи: wolf57867@gmail.com</p>
-            </footer>
-        </div>
-
-        <!-- Экран тестирования -->
-        <div id="test-screen" class="hidden">
-            <div class="test-header">
-                <button class="btn btn-secondary" id="back-btn"><i class="fas fa-arrow-left"></i> Назад</button>
-                <div class="test-info">
-                    <h3 id="current-test-name">Название теста</h3>
-                    <div class="progress-container">
-                        <span id="progress-text">Вопрос 1 из 10</span>
-                        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-                    </div>
-                </div>
-                <div class="timer" id="timer"><i class="fas fa-clock"></i> <span>00:00</span></div>
-            </div>
-
-            <div class="question-card">
-                <div class="question-header">
-                    <span class="question-number">Вопрос #<span id="question-number">1</span></span>
-                    <span class="question-points"><i class="fas fa-star"></i> 1 балл</span>
-                </div>
-                <h3 id="question-text">Текст вопроса появится здесь</h3>
-                <div id="answers-container"></div>
-                <div id="explanation" class="hidden"><h4><i class="fas fa-lightbulb"></i> Объяснение:</h4><p id="explanation-text"></p></div>
-            </div>
-
-            <div class="controls">
-                <div class="hint"><i class="fas fa-mouse-pointer"></i> Выберите один вариант ответа</div>
-                <button class="btn" id="next-btn" disabled>Следующий вопрос <i class="fas fa-arrow-right"></i></button>
-            </div>
-
-            <div class="stats">
-                <div class="stat-item"><i class="fas fa-check-circle"></i><h3>Правильно</h3><p id="correct-count">0</p></div>
-                <div class="stat-item"><i class="fas fa-times-circle"></i><h3>Неправильно</h3><p id="wrong-count">0</p></div>
-                <div class="stat-item"><i class="fas fa-hourglass-half"></i><h3>Осталось</h3><p id="remaining-count">0</p></div>
-                <div class="stat-item"><i class="fas fa-percentage"></i><h3>Точность</h3><p id="accuracy">0%</p></div>
-            </div>
-        </div>
-
-        <!-- Экран результатов -->
-        <div id="results-screen" class="hidden">
-            <div class="results-header">
-                <h1><i class="fas fa-trophy"></i> Тест завершен!</h1>
-                <p class="user-greeting" id="user-greeting">Поздравляем, Электрик!</p>
-            </div>
-            
-            <div class="score-card">
-                <div class="score-circle"><div class="score-percent" id="score-percent">0%</div><div class="score-label">Ваш результат</div></div>
-                <div class="score-message">
-                    <h3 id="result-message">Оцениваю результат...</h3>
-                    <div class="result-details">
-                        <p><i class="fas fa-check" style="color: #2ecc71;"></i> Правильных: <strong id="final-correct">0</strong></p>
-                        <p><i class="fas fa-times" style="color: #e74c3c;"></i> Неправильных: <strong id="final-wrong">0</strong></p>
-                        <p><i class="fas fa-list-alt" style="color: #3498db;"></i> Всего вопросов: <strong id="final-total">0</strong></p>
-                        <p><i class="fas fa-clock" style="color: #9b59b6;"></i> Время: <strong id="final-time">00:00</strong></p>
-                    </div>
+            <div class="sidebar-user">
+                <div class="sidebar-user-icon" id="editNameBtnSidebar">⚡</div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name" id="sidebarUserName">Электрик</div>
+                    <div class="sidebar-user-edit" id="editNameTextBtn">✏️ изменить имя</div>
                 </div>
             </div>
-            
-            <div class="answers-review"><h3><i class="fas fa-chart-bar"></i> Обзор ответов:</h3><div id="answers-review-container"></div></div>
-            
-            <div class="results-actions">
-                <button class="btn btn-secondary" id="restart-btn"><i class="fas fa-redo"></i> Пройти заново</button>
-                <button class="btn" id="new-test-btn"><i class="fas fa-book"></i> Выбрать другой тест</button>
-                <button class="btn btn-success" id="certificate-btn"><i class="fas fa-certificate"></i> Сертификат</button>
+            <nav class="nav-menu">
+                <div class="nav-item active" data-scroll="dashboard"><i class="fas fa-chart-line"></i> <span>Обзор</span></div>
+                <div class="nav-item" data-scroll="tests"><i class="fas fa-flask"></i> <span>Тесты</span></div>
+                <div class="nav-item" id="reportNavBtn"><i class="fas fa-file-alt"></i> <span>Сообщить об ошибке</span></div>
+            </nav>
+            <div class="theme-toggle" id="themeToggleBtn">
+                <i class="fas fa-moon"></i>
+                <span>Тёмная тема</span>
             </div>
-            
-            <div class="motivation"><p><i class="fas fa-quote-left"></i> Знания по электробезопасности — это не просто требования, это спасённые жизни. <i class="fas fa-quote-right"></i></p></div>
-        </div>
+        </aside>
+        <main class="main-content" id="mainContent"></main>
     </div>
-
-    <!-- ПЛАВАЮЩАЯ КНОПКА "СООБЩИТЬ ОБ ОШИБКЕ" -->
-    <button id="floating-error-btn" title="Сообщить об ошибке">
-        🐛
-    </button>
-
-    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОШИБОК (все поля editable) -->
+    <button class="floating-error-btn" id="floatingErrorBtn">🐛</button>
     <div id="errorModal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>🐛 Сообщить об ошибке</h3>
-                <span class="modal-close">&times;</span>
-            </div>
+            <div class="modal-header"><h3>🐛 Сообщить об ошибке</h3><span class="modal-close">&times;</span></div>
             <form id="errorForm">
-                <div class="form-group">
-                    <label>📚 Тест:</label>
-                    <input type="text" id="errorTestName" placeholder="Название теста">
-                </div>
-                <div class="form-group">
-                    <label>🆔 ID вопроса:</label>
-                    <input type="text" id="errorQuestionId" placeholder="ID вопроса">
-                </div>
-                <div class="form-group">
-                    <label>❓ Текст вопроса:</label>
-                    <textarea id="errorQuestionText" rows="3" placeholder="Текст вопроса"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>📋 Тип ошибки:</label>
-                    <select id="errorType">
-                        <option value="Орфографическая / грамматическая ошибка">Орфографическая / грамматическая ошибка</option>
-                        <option value="Неправильный ответ">Неправильный ответ</option>
-                        <option value="Некорректное пояснение">Некорректное пояснение</option>
-                        <option value="Другое">Другое</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>📝 Описание ошибки:</label>
-                    <textarea id="errorDescription" rows="4" placeholder="Опишите, в чём заключается ошибка..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>📧 Ваш email (необязательно):</label>
-                    <input type="email" id="userEmail" placeholder="example@mail.ru">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" id="cancelErrorBtn">Отмена</button>
-                    <button type="submit" class="btn-submit">📤 Отправить</button>
-                </div>
+                <div class="form-group"><label>Тест:</label><input type="text" id="errorTestName" placeholder="Название теста"></div>
+                <div class="form-group"><label>ID вопроса:</label><input type="text" id="errorQuestionId" placeholder="ID вопроса"></div>
+                <div class="form-group"><label>Текст вопроса:</label><textarea id="errorQuestionText" rows="3" placeholder="Текст вопроса"></textarea></div>
+                <div class="form-group"><label>Тип ошибки:</label><select id="errorType"><option>Орфографическая ошибка</option><option>Неправильный ответ</option><option>Некорректное пояснение</option><option>Другое</option></select></div>
+                <div class="form-group"><label>Описание ошибки:</label><textarea id="errorDescription" rows="4" placeholder="Опишите ошибку..."></textarea></div>
+                <div class="form-group"><label>Ваш email:</label><input type="email" id="userEmail" placeholder="example@mail.ru"></div>
+                <div style="display:flex; gap:12px; justify-content:flex-end;"><button type="button" class="btn-secondary" id="cancelErrorBtn">Отмена</button><button type="submit" class="btn">Отправить</button></div>
             </form>
         </div>
     </div>
-
     <script src="data.js"></script>
-    <script src="script.js"></script>
+    <script>
+        let currentTest = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let score = { correct: 0, totalPoints: 0, maxPoints: 0 };
+        let startTime = null;
+        let timerInterval = null;
+        let timeLeft = 0;
+        let userName = "Электрик";
+        let currentTheme = 'dark';
+
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.body.classList.remove('dark', 'light');
+            document.body.classList.add(theme);
+            localStorage.setItem('electrotest_theme', theme);
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (themeBtn) {
+                themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i> <span>Тёмная тема</span>' : '<i class="fas fa-sun"></i> <span>Светлая тема</span>';
+            }
+        }
+        function initTheme() {
+            const saved = localStorage.getItem('electrotest_theme');
+            setTheme(saved === 'light' ? 'light' : 'dark');
+        }
+
+        function shuffleArray(arr) { const s = [...arr]; for (let i = s.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [s[i], s[j]] = [s[j], s[i]]; } return s; }
+        function formatTime(sec) { return `${Math.floor(sec / 60).toString().padStart(2, '0')}:${(sec % 60).toString().padStart(2, '0')}`; }
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+        function getBestResultsToday() {
+            const results = storage.getResults();
+            const today = new Date().toISOString().slice(0, 10);
+            const todayResults = results.filter(r => r.date && r.date.slice(0, 10) === today);
+            const bestByTest = {};
+            todayResults.forEach(r => {
+                const test = tests.find(t => t.id === r.testId);
+                if (test && (!bestByTest[test.id] || r.score > bestByTest[test.id].score)) {
+                    bestByTest[test.id] = { name: test.name, score: r.score, time: r.time };
+                }
+            });
+            return Object.values(bestByTest).sort((a, b) => b.score - a.score).slice(0, 5);
+        }
+        function getStreak() {
+            const results = storage.getResults();
+            if (results.length === 0) return 0;
+            let streak = 0;
+            for (let i = results.length - 1; i >= 0; i--) { if (results[i].score >= 70) streak++; else break; }
+            return streak;
+        }
+        function getBestTime() {
+            const results = storage.getResults();
+            const passed = results.filter(r => r.score >= 70);
+            if (passed.length === 0) return null;
+            return passed.reduce((min, r) => r.time < min.time ? r : min, passed[0]);
+        }
+
+        function renderDashboard() {
+            const totalQuestions = questions.length;
+            const totalTests = tests.length;
+            const bestOverall = Math.max(...tests.map(t => storage.getBestScore(t.id)));
+            const resultsCount = storage.getResults().length;
+            const bestResultsToday = getBestResultsToday();
+            const streak = getStreak();
+            const bestTime = getBestTime();
+
+            let bestResultsHtml = bestResultsToday.length === 0 ? '<div style="padding: 12px 0; text-align: center; font-size: 12px; color: #8E95A5;">Нет результатов за сегодня<br>Пройдите тест, чтобы появилась статистика!</div>' : bestResultsToday.map(r => `<div class="best-result-item"><div class="best-result-name">${escapeHtml(r.name)}</div><div class="best-result-stats"><span>🏆 ${r.score}%</span><span>⏱️ ${formatTime(r.time)}</span></div></div>`).join('');
+            const streakHtml = streak > 0 ? `<span class="status-badge status-pass">🔥 ${streak} подряд</span>` : '<span class="status-badge" style="background:rgba(128,128,128,0.15);color:#8E95A5;">Нет серии</span>';
+            const bestTimeHtml = bestTime ? `${bestTime.score}% (${formatTime(bestTime.time)})` : '—';
+
+            const html = `<div class="stats-grid" id="dashboardStats"><div class="stat-card"><div class="stat-title"><i class="fas fa-database"></i> Вопросов в базе</div><div class="stat-value">${totalQuestions}</div></div><div class="stat-card"><div class="stat-title"><i class="fas fa-clipboard-list"></i> Доступных тестов</div><div class="stat-value">${totalTests}</div></div><div class="stat-card"><div class="stat-title"><i class="fas fa-trophy"></i> Лучший результат</div><div class="stat-value">${bestOverall > 0 ? bestOverall + '%' : '0%'}</div></div><div class="stat-card"><div class="stat-title"><i class="fas fa-chart-line"></i> Количество пройденных тестов</div><div class="stat-value">${resultsCount}</div></div></div>
+            <div class="double-grid"><div class="info-card"><div class="card-header"><span><i class="fas fa-microchip"></i> Лучшие результаты за сегодня</span></div>${bestResultsHtml}</div><div class="info-card"><div class="card-header"><span><i class="fas fa-chart-simple"></i> Моя статистика</span></div><div class="device-row"><span>✅ Тестов подряд на 70%+</span>${streakHtml}</div><div class="device-row"><span>⚡ Лучшее время на 70%+</span><span class="status-badge status-pass">${bestTimeHtml}</span></div><div class="progress-bar-container"><div class="progress-bar-fill" style="width:${bestOverall}%"></div></div><div class="device-row"><span>Общий прогресс</span><span>${bestOverall}%</span></div></div></div>
+            <div class="tests-section" id="testsSection"><div class="section-header"><span><i class="fas fa-flask"></i> Доступные тесты</span><span class="status-badge status-pass">${totalTests} тестов</span></div><div class="tests-grid-cards" id="testsGridContainer"></div></div>
+            <div class="footer"><p>© 2024-2025 ЭлектроТест. Все права защищены.</p><p>Система тестирования по электробезопасности</p><p>📧 Разработчик: wolf57867@gmail.com</p><p>Версия 2.0 | ${new Date().getFullYear()}</p></div>`;
+            document.getElementById('mainContent').innerHTML = html;
+
+            const grid = document.getElementById('testsGridContainer');
+            grid.innerHTML = '';
+            tests.forEach(test => {
+                const qCount = questions.filter(q => q.testId === test.id).length;
+                const bestScore = storage.getBestScore(test.id);
+                const maxScore = questions.filter(q => q.testId === test.id).reduce((s, q) => s + q.points, 0);
+                const percent = maxScore > 0 ? Math.round((bestScore / maxScore) * 100) : 0;
+                const card = document.createElement('div');
+                card.className = 'test-card-item';
+                card.innerHTML = `<div class="test-card-header"><i class="${test.icon}" style="color:${test.color}; font-size:22px"></i><h4>${escapeHtml(test.name)}</h4></div><div class="test-card-desc">${escapeHtml(test.description)}</div><div class="test-card-meta"><div class="test-card-stats"><span><i class="fas fa-question"></i> ${qCount} вопр.</span><span><i class="fas fa-clock"></i> ${Math.floor(test.timeLimit/60)} мин</span>${bestScore > 0 ? `<span><i class="fas fa-star" style="color:#F5A623"></i> ${percent}%</span>` : ''}</div><button class="btn-small start-test" data-id="${test.id}">Начать →</button></div></div>`;
+                grid.appendChild(card);
+            });
+            document.querySelectorAll('.start-test').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); startTest(parseInt(btn.dataset.id)); }));
+        }
+
+        function startTest(testId) {
+            currentTest = tests.find(t => t.id === testId);
+            const allQ = questions.filter(q => q.testId === testId);
+            currentQuestions = shuffleArray(allQ).slice(0, Math.min(10, allQ.length));
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            score = { correct: 0, totalPoints: 0, maxPoints: currentQuestions.reduce((s, q) => s + q.points, 0) };
+            timeLeft = currentTest.timeLimit;
+            startTime = Date.now();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) { clearInterval(timerInterval); finishTest(); return; }
+                timeLeft--;
+                const timerEl = document.getElementById('timerDisplay');
+                if (timerEl) timerEl.textContent = formatTime(timeLeft);
+                if (timeLeft < 60) timerEl?.style.setProperty('background', '#E74C3C');
+                else if (timeLeft < 180) timerEl?.style.setProperty('background', '#F5A623');
+            }, 1000);
+            renderTestScreen();
+        }
+
+        function renderTestScreen() {
+            const q = currentQuestions[currentQuestionIndex];
+            const wrong = userAnswers.length - score.correct;
+            const remaining = currentQuestions.length - userAnswers.length;
+            const accuracy = userAnswers.length > 0 ? Math.round((score.correct / userAnswers.length) * 100) : 0;
+            const html = `<div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;"><button class="btn-secondary btn" id="exitTestBtn"><i class="fas fa-arrow-left"></i> Выйти</button><h3 style="font-size:18px">${escapeHtml(currentTest.name)}</h3><div class="timer" id="timerDisplay">${formatTime(timeLeft)}</div></div>
+            <div class="question-card"><div style="display:flex; justify-content:space-between; margin-bottom:20px;"><span class="status-badge status-progress">Вопрос ${currentQuestionIndex+1} из ${currentQuestions.length}</span><span><i class="fas fa-star" style="color:#F5A623"></i> ${q.points} баллов</span></div>
+            <h3 style="font-size:1.2rem; margin-bottom:28px; line-height:1.4;">${escapeHtml(q.text)}</h3><div id="answersContainer"></div>
+            <div id="explanationBox" style="margin-top:24px; padding:16px; border-radius:16px; display:none;"><i class="fas fa-lightbulb" style="color:#F5A623"></i> <span id="explanationText"></span></div></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:16px;"><div class="small-stats"><div class="small-stat"><i class="fas fa-check-circle" style="color:#2ECC71"></i> <span id="correctStat">${score.correct}</span> прав.</div><div class="small-stat"><i class="fas fa-times-circle" style="color:#E74C3C"></i> <span id="wrongStat">${wrong}</span> неправ.</div><div class="small-stat"><i class="fas fa-hourglass-half"></i> <span id="remainingStat">${remaining}</span> осталось</div><div class="small-stat"><i class="fas fa-percentage"></i> <span id="accuracyStat">${accuracy}</span>% точность</div></div><button class="btn" id="nextQuestionBtn" disabled>Следующий вопрос →</button></div></div>`;
+            document.getElementById('mainContent').innerHTML = html;
+            renderCurrentQuestion();
+            document.getElementById('exitTestBtn').addEventListener('click', () => { clearInterval(timerInterval); renderDashboard(); });
+            document.getElementById('nextQuestionBtn').addEventListener('click', () => { currentQuestionIndex++; if (currentQuestionIndex < currentQuestions.length) renderTestScreen(); else finishTest(); });
+        }
+
+        function renderCurrentQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            const container = document.getElementById('answersContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            const shuffled = shuffleArray([...question.answers]);
+            shuffled.forEach(answer => {
+                const div = document.createElement('div');
+                div.className = 'answer-option';
+                div.setAttribute('data-answer-id', answer.id);
+                div.setAttribute('data-is-correct', answer.isCorrect);
+                div.innerHTML = `<span class="answer-text">${escapeHtml(answer.text)}</span>`;
+                div.addEventListener('click', () => selectAnswer(div, answer, shuffled));
+                container.appendChild(div);
+            });
+            document.getElementById('explanationBox').style.display = 'none';
+            document.getElementById('nextQuestionBtn').disabled = true;
+            updateStatsDisplay();
+        }
+
+        function selectAnswer(selectedDiv, selectedAnswer, allAnswers) {
+            if (selectedDiv.classList.contains('selected')) return;
+            document.querySelectorAll('.answer-option').forEach(d => { d.classList.remove('selected', 'correct', 'wrong'); });
+            selectedDiv.classList.add('selected');
+            allAnswers.forEach(answer => {
+                const div = document.querySelector(`.answer-option[data-answer-id="${answer.id}"]`);
+                if (div) {
+                    if (answer.isCorrect) div.classList.add('correct');
+                    else if (answer.id === selectedAnswer.id && !answer.isCorrect) div.classList.add('wrong');
+                }
+            });
+            userAnswers.push({
+                questionId: currentQuestions[currentQuestionIndex].id,
+                selectedAnswerId: selectedAnswer.id,
+                isCorrect: selectedAnswer.isCorrect,
+                points: selectedAnswer.isCorrect ? currentQuestions[currentQuestionIndex].points : 0
+            });
+            if (selectedAnswer.isCorrect) { score.correct++; score.totalPoints += currentQuestions[currentQuestionIndex].points; }
+            document.getElementById('explanationText').innerHTML = escapeHtml(currentQuestions[currentQuestionIndex].explanation);
+            document.getElementById('explanationBox').style.display = 'block';
+            document.getElementById('nextQuestionBtn').disabled = false;
+            updateStatsDisplay();
+        }
+
+        function updateStatsDisplay() {
+            const wrong = userAnswers.length - score.correct;
+            const remaining = currentQuestions.length - userAnswers.length;
+            const accuracy = userAnswers.length > 0 ? Math.round((score.correct / userAnswers.length) * 100) : 0;
+            if (document.getElementById('correctStat')) document.getElementById('correctStat').textContent = score.correct;
+            if (document.getElementById('wrongStat')) document.getElementById('wrongStat').textContent = wrong;
+            if (document.getElementById('remainingStat')) document.getElementById('remainingStat').textContent = remaining;
+            if (document.getElementById('accuracyStat')) document.getElementById('accuracyStat').textContent = accuracy;
+        }
+
+        function finishTest() {
+            clearInterval(timerInterval);
+            const totalTime = Math.floor((Date.now() - startTime) / 1000);
+            const percentage = score.maxPoints > 0 ? Math.round((score.totalPoints / score.maxPoints) * 100) : 0;
+            storage.saveResult(currentTest.id, percentage, totalTime);
+            renderResultsScreen(percentage, totalTime);
+        }
+
+        function renderResultsScreen(percentage, totalTime) {
+            const wrong = userAnswers.length - score.correct;
+            let message = percentage >= 90 ? 'Отличный результат! Вы настоящий эксперт!' : (percentage >= 70 ? 'Хороший результат! Знания на хорошем уровне!' : (percentage >= 50 ? 'Удовлетворительно. Есть над чем поработать.' : 'Нужно больше практики. Рекомендуем изучить материал еще раз.'));
+            let reviewHtml = '';
+            userAnswers.forEach((ua, idx) => {
+                const q = currentQuestions[idx];
+                const selected = q.answers.find(a => a.id === ua.selectedAnswerId);
+                const correct = q.answers.find(a => a.isCorrect);
+                reviewHtml += `<div class="info-card" style="margin-bottom:16px; border-left:4px solid ${ua.isCorrect ? '#2ECC71' : '#E74C3C'}"><div><strong>Вопрос ${idx+1}:</strong> ${escapeHtml(q.text)}</div><div style="margin-top:8px; color:${ua.isCorrect ? '#2ECC71' : '#E74C3C'}"><i class="fas fa-${ua.isCorrect ? 'check' : 'times'}"></i> Ваш ответ: ${escapeHtml(selected.text)}</div>${!ua.isCorrect ? `<div style="margin-top:4px; color:#2ECC71"><i class="fas fa-check"></i> Правильный ответ: ${escapeHtml(correct.text)}</div>` : ''}<div style="margin-top:8px; font-size:12px; color:#8E95A5"><i class="fas fa-info-circle"></i> ${escapeHtml(q.explanation)}</div></div>`;
+            });
+            const html = `<div><div style="text-align:center; margin-bottom:32px;"><h1 style="font-size:2rem"><i class="fas fa-trophy" style="color:#F5A623"></i> Тест завершен!</h1><p>Поздравляем, ${escapeHtml(userName)}!</p><div style="font-size:2.5rem; font-weight:700; margin:16px 0">${percentage}%</div><p style="font-size:14px">${message}</p></div>
+            <div class="double-grid"><div class="info-card"><div class="card-header">Результаты</div><div class="device-row"><span>Правильных ответов:</span><span class="status-badge status-pass">${score.correct}</span></div><div class="device-row"><span>Неправильных ответов:</span><span class="status-badge status-fail">${wrong}</span></div><div class="device-row"><span>Всего вопросов:</span><span>${currentQuestions.length}</span></div><div class="device-row"><span>Время:</span><span>${formatTime(totalTime)}</span></div></div>
+            <div class="info-card"><div class="card-header">Действия</div><div style="display:flex; gap:12px; flex-wrap:wrap;"><button class="btn" id="restartTestBtn">🔄 Пройти заново</button><button class="btn-secondary btn" id="dashboardBtn">📊 На главную</button><button class="btn" id="certificateBtn">📜 Сертификат</button></div></div></div>
+            <div class="tests-section"><div class="section-header"><span><i class="fas fa-chart-bar"></i> Детальный обзор</span></div><div style="padding:20px">${reviewHtml}</div></div></div>`;
+            document.getElementById('mainContent').innerHTML = html;
+            document.getElementById('restartTestBtn')?.addEventListener('click', () => startTest(currentTest.id));
+            document.getElementById('dashboardBtn')?.addEventListener('click', () => renderDashboard());
+            document.getElementById('certificateBtn')?.addEventListener('click', () => {
+                const win = window.open('', '_blank');
+                win.document.write(`<html><head><title>Сертификат</title><style>body{font-family:Arial;text-align:center;padding:50px;background:#1a1a2e}.certificate{background:white;padding:50px;border-radius:20px;border:15px solid #F5A623}.score{font-size:60px;color:#e74c3c}</style></head><body><div class="certificate"><h1>СЕРТИФИКАТ</h1><p>Настоящим удостоверяется, что</p><h2>${escapeHtml(userName)}</h2><p>успешно прошел(а) тестирование</p><h3>${escapeHtml(currentTest.name)}</h3><div class="score">${percentage}%</div><p>Правильных ответов: ${score.correct} из ${currentQuestions.length}</p><p>${new Date().toLocaleDateString('ru-RU')}</p></div></body></html>`);
+                win.document.close();
+            });
+        }
+
+        function scrollToElement(id) { const el = document.getElementById(id); if (el) { const offset = 80; window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - offset, behavior: 'smooth' }); } }
+        function initNavigation() {
+            document.querySelectorAll('.nav-item[data-scroll]').forEach(item => {
+                item.addEventListener('click', () => { scrollToElement(item.dataset.scroll === 'dashboard' ? 'dashboardStats' : 'testsSection'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); item.classList.add('active'); });
+            });
+            document.getElementById('logoHomeBtn')?.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector('.nav-item[data-scroll="dashboard"]')?.classList.add('active'); });
+        }
+        function initNameEditor() {
+            const editFn = () => { const newName = prompt('Введите ваше имя:', userName); if (newName && newName.trim()) { userName = newName.trim(); storage.saveUserName(userName); document.getElementById('sidebarUserName').textContent = userName; renderDashboard(); } };
+            document.getElementById('editNameBtnSidebar')?.addEventListener('click', editFn);
+            document.getElementById('editNameTextBtn')?.addEventListener('click', editFn);
+        }
+        function setupModal() {
+            const modal = document.getElementById('errorModal');
+            const openModal = () => {
+                if (currentTest && currentQuestions[currentQuestionIndex]) { const q = currentQuestions[currentQuestionIndex]; document.getElementById('errorTestName').value = currentTest.name; document.getElementById('errorQuestionId').value = q.id; document.getElementById('errorQuestionText').value = q.text; }
+                modal.style.display = 'flex';
+            };
+            document.getElementById('floatingErrorBtn')?.addEventListener('click', openModal);
+            document.getElementById('reportNavBtn')?.addEventListener('click', openModal);
+            document.querySelector('.modal-close')?.addEventListener('click', () => modal.style.display = 'none');
+            document.getElementById('cancelErrorBtn')?.addEventListener('click', () => modal.style.display = 'none');
+            modal?.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+            document.getElementById('errorForm')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!document.getElementById('errorDescription').value.trim()) { alert('Опишите ошибку!'); return; }
+                const errors = JSON.parse(localStorage.getItem('electrotest_errors') || '[]');
+                errors.push({ test: document.getElementById('errorTestName').value, questionId: document.getElementById('errorQuestionId').value, text: document.getElementById('errorQuestionText').value, type: document.getElementById('errorType').value, description: document.getElementById('errorDescription').value, email: document.getElementById('userEmail').value, date: new Date().toLocaleString() });
+                localStorage.setItem('electrotest_errors', JSON.stringify(errors));
+                alert('✅ Спасибо! Ошибка сохранена.');
+                modal.style.display = 'none';
+                document.getElementById('errorForm').reset();
+            });
+        }
+        function init() {
+            initTheme();
+            userName = storage.getUserName();
+            document.getElementById('sidebarUserName').textContent = userName;
+            renderDashboard();
+            initNavigation();
+            initNameEditor();
+            setupModal();
+            document.getElementById('themeToggleBtn')?.addEventListener('click', () => setTheme(currentTheme === 'dark' ? 'light' : 'dark'));
+        }
+        init();
+    </script>
 </body>
 </html>
