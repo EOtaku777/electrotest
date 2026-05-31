@@ -93,7 +93,7 @@ const tests = [
      {
         id: 11,
         name: "СН 4.04.01-2019",
-        description: "СИСТЕМЫ ЭЛЕКТРООБОРУДОВАНИЯ ЖИЛЫХ И ОБЩЕСТВЕННЫХ ЗДАНИЙ",
+        description: "Системы электрооборудования жилыч и общественных зданий",
         icon: "fas fa-user-shield",
         color: "#c82d5b",
         difficulty: "Лёгкий",
